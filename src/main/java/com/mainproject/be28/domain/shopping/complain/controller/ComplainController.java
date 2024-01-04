@@ -62,6 +62,6 @@ public class ComplainController {
         crudService.delete(complainId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-    }
+}
 
 
