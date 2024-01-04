@@ -1,0 +1,62 @@
+spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  jpa:
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+
+    hibernate:
+      ddl-auto: none
+
+    properties:
+      hibernate:
+        highlight_sql: true
+        format_sql: true
+        show_sql: true
+      dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+
+  datasource:
+    hikari:
+      maximum-pool-size: 30
+    url: ${mysql_url}
+    username: ${mysql_master}
+    password: ${mysql_password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+logging:
+  level:
+    org:
+      springframework:
+        orm:
+          jpa: DEBUG
+server:
+#  port: 8081
+  servlet:
+    encoding:
+      force-response: true
+h2:
+  console:
+    enabled: false
+
+jwt:
+  access-token-expiration-minutes: 60
+  refresh-token-expiration-minutes: 120
+security:
+  oauth2:
+    client:
+      registration:
+        google:
+          clientId: ${G_CLIENT_ID}
+          clientSecret: ${G_CLIENT_SECRET}
+          scope:
+            - email
+            - profile
+cloud:
+  aws:
+    credentials.access_key: ${S3_ACCESS_KEY}
+    credentials.secret_key: ${S3_SECRET_KEY}
+    s3.bucket: be28
+    region.static: ap-northeast-2
+    stack.auto: false
+
