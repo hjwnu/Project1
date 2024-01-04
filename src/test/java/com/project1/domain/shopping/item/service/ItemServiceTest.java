@@ -1,12 +1,3 @@
-//package com.mainproject.be28.domain.shopping.item.service;
-//
-//import com.mainproject.be28.domain.shopping.item.dto.ItemDto;
-//import com.mainproject.be28.domain.shopping.item.entity.Item;
-//import com.mainproject.be28.domain.shopping.item.mapper.ItemMapper;
-//import com.mainproject.be28.domain.shopping.item.repository.ItemRepository;
-//import com.mainproject.be28.domain.shopping.review.entity.Review;
-//import com.mainproject.be28.global.exception.BusinessLogicException;
-//import com.mainproject.be28.global.exception.ExceptionCode;
 //import org.junit.jupiter.api.Test;
 //import org.junit.jupiter.api.extension.ExtendWith;
 //import org.mockito.InjectMocks;

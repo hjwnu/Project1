@@ -14,7 +14,7 @@ public class AdminAspect {
         this.memberVerifyService = memberVerifyService;
     }
 
-    @Pointcut("execution(* com.mainproject.be28.domain.admin.service.*.*(..))")
+    @Pointcut("execution(* com.project1.domain.admin.service.*.*(..))")
     private void admin(){}
 
     @Before("admin()")

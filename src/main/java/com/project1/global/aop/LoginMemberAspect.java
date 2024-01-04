@@ -13,7 +13,7 @@ public class LoginMemberAspect {
     public LoginMemberAspect(MemberVerifyService memberVerifyService) {
         this.memberVerifyService = memberVerifyService;
     }
-    @Pointcut("execution(* com.mainproject.be28.domain..*creat*(..))")
+    @Pointcut("execution(* com.project1.domain..*creat*(..))")
     private void member(){}
 
     @Before("member()")
