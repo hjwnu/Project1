@@ -22,7 +22,7 @@ public class QOrder extends EntityPathBase<Order> {
 
     public static final QOrder order = new QOrder("order1");
 
-    public final com.project1.global.auditable.QAuditable _super = new com.project1.global.auditable.QAuditable(this);
+    public final com.project1.global.generic.QAuditable _super = new com.project1.global.generic.QAuditable(this);
 
     public final com.project1.domain.shopping.cart.entity.QCart cart;
 

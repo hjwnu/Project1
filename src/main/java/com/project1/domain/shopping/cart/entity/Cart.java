@@ -1,6 +1,6 @@
 package com.project1.domain.shopping.cart.entity;
 
-import com.project1.global.auditable.Auditable;
+import com.project1.global.generic.Auditable;
 import com.project1.domain.member.entity.Member;
 import lombok.Getter;
 import lombok.Setter;

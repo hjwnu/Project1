@@ -22,7 +22,7 @@ public class QComment extends EntityPathBase<Comment> {
 
     public static final QComment comment = new QComment("comment");
 
-    public final com.project1.global.auditable.QAuditable _super = new com.project1.global.auditable.QAuditable(this);
+    public final com.project1.global.generic.QAuditable _super = new com.project1.global.generic.QAuditable(this);
 
     public final com.project1.domain.notice.board.entity.QBoard board;
 

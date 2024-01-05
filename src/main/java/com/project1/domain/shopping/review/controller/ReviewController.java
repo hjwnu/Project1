@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
-
+import javax.validation.constraints.PositiveOrZero;
 
 
 @RestController
@@ -30,7 +30,7 @@ public class ReviewController {
     @PostMapping("/{item-id}/{score}")
     public ResponseEntity<SingleResponseDto<ReviewResponseDto>> createReview(@PathVariable("item-id")long itemId,
                                                                              @RequestBody @Valid ReviewPostDto reviewPostDto,
-                                                                             @PathVariable("score") int score) {
+                                                                             @PathVariable("score")@PositiveOrZero int score) {
         reviewPostDto.setScore(score);
         reviewPostDto.setItemId(itemId);
         SingleResponseDto<ReviewResponseDto> response = new SingleResponseDto<>(reviewService.createReview(reviewPostDto),ok);

@@ -22,7 +22,7 @@ public class QCartItem extends EntityPathBase<CartItem> {
 
     public static final QCartItem cartItem = new QCartItem("cartItem");
 
-    public final com.project1.global.auditable.QAuditable _super = new com.project1.global.auditable.QAuditable(this);
+    public final com.project1.global.generic.QAuditable _super = new com.project1.global.generic.QAuditable(this);
 
     public final QCart cart;
 

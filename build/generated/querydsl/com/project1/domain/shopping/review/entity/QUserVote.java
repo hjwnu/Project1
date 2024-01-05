@@ -19,7 +19,7 @@ public class QUserVote extends EntityPathBase<UserVote> {
 
     public static final QUserVote userVote = new QUserVote("userVote");
 
-    public final com.project1.global.auditable.QAuditable _super = new com.project1.global.auditable.QAuditable(this);
+    public final com.project1.global.generic.QAuditable _super = new com.project1.global.generic.QAuditable(this);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;

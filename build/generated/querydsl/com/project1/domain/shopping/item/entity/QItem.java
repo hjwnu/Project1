@@ -20,7 +20,7 @@ public class QItem extends EntityPathBase<Item> {
 
     public static final QItem item = new QItem("item");
 
-    public final com.project1.global.auditable.QAuditable _super = new com.project1.global.auditable.QAuditable(this);
+    public final com.project1.global.generic.QAuditable _super = new com.project1.global.generic.QAuditable(this);
 
     public final StringPath brand = createString("brand");
 

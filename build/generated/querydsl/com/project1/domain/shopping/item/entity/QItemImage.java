@@ -22,12 +22,13 @@ public class QItemImage extends EntityPathBase<ItemImage> {
 
     public static final QItemImage itemImage = new QItemImage("itemImage");
 
-    public final com.project1.global.auditable.QAuditable _super = new com.project1.global.auditable.QAuditable(this);
+    public final com.project1.global.generic.QGenericImage _super = new com.project1.global.generic.QGenericImage(this);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
-    public final StringPath imageName = createString("imageName");
+    //inherited
+    public final StringPath imageName = _super.imageName;
 
     public final QItem item;
 
@@ -36,11 +37,14 @@ public class QItemImage extends EntityPathBase<ItemImage> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
 
-    public final StringPath originalName = createString("originalName");
+    //inherited
+    public final StringPath originalName = _super.originalName;
 
-    public final StringPath path = createString("path");
+    //inherited
+    public final StringPath path = _super.path;
 
-    public final StringPath representationImage = createString("representationImage");
+    //inherited
+    public final StringPath representationImage = _super.representationImage;
 
     public QItemImage(String variable) {
         this(ItemImage.class, forVariable(variable), INITS);

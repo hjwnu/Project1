@@ -1,6 +1,6 @@
 package com.project1.domain.shopping.order.entity;
 
-import com.project1.global.auditable.Auditable;
+import com.project1.global.generic.Auditable;
 import com.project1.domain.shopping.item.entity.Item;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

@@ -22,7 +22,7 @@ public class QReview extends EntityPathBase<Review> {
 
     public static final QReview review = new QReview("review");
 
-    public final com.project1.global.auditable.QAuditable _super = new com.project1.global.auditable.QAuditable(this);
+    public final com.project1.global.generic.QAuditable _super = new com.project1.global.generic.QAuditable(this);
 
     public final StringPath content = createString("content");
 

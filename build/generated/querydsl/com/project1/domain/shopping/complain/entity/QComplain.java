@@ -22,7 +22,7 @@ public class QComplain extends EntityPathBase<Complain> {
 
     public static final QComplain complain = new QComplain("complain");
 
-    public final com.project1.global.auditable.QAuditable _super = new com.project1.global.auditable.QAuditable(this);
+    public final com.project1.global.generic.QAuditable _super = new com.project1.global.generic.QAuditable(this);
 
     public final NumberPath<Long> complainId = createNumber("complainId", Long.class);
 

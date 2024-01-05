@@ -1,6 +1,6 @@
 package com.project1.domain.shopping.review.entity;
 
-import com.project1.global.auditable.Auditable;
+import com.project1.global.generic.Auditable;
 import com.project1.domain.member.entity.Member;
 import com.project1.domain.shopping.item.entity.Item;
 import lombok.*;

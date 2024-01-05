@@ -2,7 +2,7 @@ package com.project1.domain.notice.comment.entity;
 
 import com.project1.domain.member.entity.Member;
 import com.project1.domain.notice.board.entity.Board;
-import com.project1.global.auditable.Auditable;
+import com.project1.global.generic.Auditable;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -22,7 +22,7 @@ public class QBoard extends EntityPathBase<Board> {
 
     public static final QBoard board = new QBoard("board");
 
-    public final com.project1.global.auditable.QAuditable _super = new com.project1.global.auditable.QAuditable(this);
+    public final com.project1.global.generic.QAuditable _super = new com.project1.global.generic.QAuditable(this);
 
     public final StringPath boardCategory = createString("boardCategory");
 

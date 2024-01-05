@@ -1,7 +1,7 @@
 package com.project1.domain.notice.board.entity;
 
 import com.project1.domain.notice.comment.entity.Comment;
-import com.project1.global.auditable.Auditable;
+import com.project1.global.generic.Auditable;
 import com.project1.domain.member.entity.Member;
 import lombok.Getter;
 import lombok.Setter;

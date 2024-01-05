@@ -22,7 +22,7 @@ public class QOrderItem extends EntityPathBase<OrderItem> {
 
     public static final QOrderItem orderItem = new QOrderItem("orderItem");
 
-    public final com.project1.global.auditable.QAuditable _super = new com.project1.global.auditable.QAuditable(this);
+    public final com.project1.global.generic.QAuditable _super = new com.project1.global.generic.QAuditable(this);
 
     public final NumberPath<Long> count = createNumber("count", Long.class);
 
