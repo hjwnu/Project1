@@ -1,8 +1,6 @@
 package com.project1.domain.shopping.order.entity;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,6 +10,7 @@ import javax.persistence.Id;
 @Getter@Setter
 @Entity
 @NoArgsConstructor
+@Builder @AllArgsConstructor
 public class DeliveryInfo {
     @Id
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
@@ -21,12 +20,12 @@ public class DeliveryInfo {
     private String recipient;
 //    @NotNull
 //    @Pattern(regexp = "01(?:0|1|[6-9])[.-]?(\\d{3}|\\d{4})[.-]?(\\d{4})$")
-    private String phoneNumber;
+    private String phone;
     private String address;
 
-    public DeliveryInfo createDeliverInfo(String recipient, String phoneNumber, String address) {
+    public DeliveryInfo createDeliverInfo(String recipient, String phone, String address) {
         this.address = address;
-        this.phoneNumber = phoneNumber;
+        this.phone= phone;
         this.recipient = recipient;
 
         return this;

@@ -1,5 +1,6 @@
 package com.project1.domain.shopping.order.service.layer2;
 
+import com.project1.domain.shopping.cart.entity.Cart;
 import com.project1.domain.shopping.order.repository.OrderRepository;
 import com.project1.domain.member.entity.Member;
 import com.project1.domain.shopping.item.entity.Item;
@@ -28,8 +29,8 @@ public class OrderCrudService
         this.repository = repository;
         this.mapper = mapper;
     }
-    public Order create(OrderDto.PostDto postDto, Member member, List<Item> item) {
-        Order order = postDtoToEntity(postDto, member,item);
+    public Order create(OrderDto.PostDto postDto, Cart cart, Member member,DeliveryInfo info, List<Item> item) {
+        Order order = postDtoToEntity(postDto,cart, member, info,item);
         return getRepository().save(order);
     }
     public Order find(long orderNumber) {
@@ -53,16 +54,13 @@ public class OrderCrudService
         return repository.findOrderByMember_Name(str);
     }
 
-    private Order postDtoToEntity(OrderDto.PostDto postDto, Member member, List<Item> item) {
+    private Order postDtoToEntity(OrderDto.PostDto postDto, Cart cart , Member member, DeliveryInfo info, List<Item> item) {
         List<OrderItem> list = orderItemDtoToEntityList(postDto, item);
-        DeliveryInfo info;
-        if (postDto.isSameMemberAndRecipient()) {
-            info = createDeliveryInfo(member.getName(),member.getPhone(), member.getAddress());
-        } else info = createDeliveryInfo(postDto.getRecipient(), postDto.getPhone(), postDto.getAddress());
-
         return  Order.builder()
                 .status(Order.Status.ORDER_PLACED)
                 .orderItemList(list)
+                .member(member)
+                .cart(cart)
                 .deliveryInfo(info)
                 .build();
     }
@@ -75,9 +73,6 @@ public class OrderCrudService
                                 .orElseThrow(() -> new IllegalArgumentException("Invalid item ID")),
                         dto.getCount()))
                 .collect(Collectors.toList());
-    }
-    private DeliveryInfo createDeliveryInfo(String recipient, String phone, String address) {
-        return new DeliveryInfo().createDeliverInfo(recipient, phone,address);
     }
 
 }

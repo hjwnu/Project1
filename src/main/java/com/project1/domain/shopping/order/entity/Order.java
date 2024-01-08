@@ -83,7 +83,7 @@ public class Order extends Auditable {
     public void onPrePersist() {
         if (this.orderId == null) {
             String date = ZonedDateTime.now(ZoneId.of("UTC")).plusHours(9).format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
-            this.orderId =Long.parseLong(date + RandomStringUtils.randomNumeric(6));
+            this.orderId =Long.parseLong(date + RandomStringUtils.randomNumeric(4));
         }
     }
 }

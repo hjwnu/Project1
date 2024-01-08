@@ -55,11 +55,7 @@ public class Item extends Auditable {
         this.Images.add(i);
     }
 
-    public void removeStocks(Long count) {
-        long stock = this.stock - count;
-        if(stock< 0) throw new BusinessLogicException(ExceptionCode.LOW_STOCK);
-        else this.stock = stock;
-    }
+
 
     public void setRepresentationImage() {
         ItemImage repImg = this.Images.get(0);

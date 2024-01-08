@@ -9,6 +9,8 @@ import com.project1.domain.shopping.item.repository.ItemRepository;
 import com.project1.domain.shopping.review.dto.ReviewDto;
 import com.project1.domain.shopping.review.entity.Review;
 import com.project1.domain.shopping.review.mapper.ReviewMapper;
+import com.project1.global.exception.BusinessLogicException;
+import com.project1.global.exception.ExceptionCode;
 import com.project1.global.generic.GenericCrudService;
 import com.project1.global.generic.GenericMapper;
 import org.springframework.data.domain.PageRequest;
@@ -68,6 +70,11 @@ public class ItemCrudService
         List<ReviewDto.ReviewResponseDto> reviewResponseList = getReviewsResponseDto(entity);
         return new ItemDto.Response(onlyitemResponseDto, reviewResponseList);
     }
+    public void removeStocks(Item item,Long count) {
+        long stock = item.getStock() - count;
+        if(stock< 0) throw new BusinessLogicException(ExceptionCode.LOW_STOCK);
+        else item.setStock(stock);
+    }
 
     private List<ReviewDto.ReviewResponseDto> getReviewsResponseDto(Item item) {
         List<ReviewDto.ReviewResponseDto> reviewResponseDtoList = new ArrayList<>();
@@ -81,7 +88,6 @@ public class ItemCrudService
         }
         return reviewResponseDtoList;
     }
-
     private List<OnlyItemResponseDto> listToDtoList(List<Item> itemList){
         return mapper.itemListToOnlyItemResponseDtoList(itemList);
     }

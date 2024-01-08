@@ -1,6 +1,7 @@
 package com.project1.domain.shopping.order.controller;
 
 import com.project1.domain.shopping.order.dto.OrderDto;
+import com.project1.domain.shopping.order.entity.Order;
 import com.project1.domain.shopping.order.service.layer1.OrderService;
 import com.project1.global.response.SingleResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,15 @@ public class OrderController {
         return new ResponseEntity<>(response, ok);
     }
 
+    @PatchMapping("/{orderNumber}")
+    public ResponseEntity<SingleResponseDto<OrderDto.ResponseDto>> patchOrderInfo(@Valid @RequestParam("orderNumber") long orderNumber
+                                                                               ,@Valid @RequestBody OrderDto.PatchDto patchDto) {
+        OrderDto.ResponseDto order =
+                orderService.updateDeliveryInfo(orderNumber,patchDto);
+        SingleResponseDto<OrderDto.ResponseDto> response =  new SingleResponseDto<>(order,ok);
+
+        return new ResponseEntity<>(response, ok);
+    }
     @GetMapping("/checkout")
     public ResponseEntity<SingleResponseDto<OrderDto.ResponseDto>> getOrderToPay(@Positive long orderNumber) { // 결제 창
         SingleResponseDto<OrderDto.ResponseDto> response =  new SingleResponseDto<>(orderService.findOrderDetails(orderNumber),ok);

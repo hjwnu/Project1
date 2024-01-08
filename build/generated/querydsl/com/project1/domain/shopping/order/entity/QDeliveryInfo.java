@@ -23,7 +23,7 @@ public class QDeliveryInfo extends EntityPathBase<DeliveryInfo> {
 
     public final NumberPath<Long> deliveryId = createNumber("deliveryId", Long.class);
 
-    public final StringPath phoneNumber = createString("phoneNumber");
+    public final StringPath phone = createString("phone");
 
     public final StringPath recipient = createString("recipient");
 

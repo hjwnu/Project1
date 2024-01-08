@@ -38,6 +38,8 @@ public class OrderDto {
         @Nullable
         private String address;
         @Nullable
+        private Order.Status status;
+        @Nullable
         private Map<Long, Long> itemAndQuantity;
     }
     @Getter  @Setter
@@ -47,7 +49,7 @@ public class OrderDto {
         private String recipient;
         private String phone;
         private String address;
-        private List<OrderItem> orderItemList;
+        private List<OrderItemDto> orderItemList;
         private Long totalPrice;
         private Order.Status status;
     }
