@@ -44,6 +44,12 @@ public class ReviewService {
     }
 
     public ReviewDto.ReviewResponseDto updateReview(long reviewId, ReviewDto.ReviewPatchDto patchDto, List<MultipartFile> reviewImgList) throws IOException {
+        /*fixme:
+           feature for deleting only images is needed.
+           Currently, it's implemented so that only adding and modifying images is possible while maintaining the images in the DB.
+           If there is no images in requestBody, it's easy and comport to delete images that have been in DB though.
+           I put it on hold because I couldn’t figure out how to implement it on the front end.
+         */
         Review findReview = crudService.findEntity(reviewId);
         Review updatedReview = crudService.update(reviewId,patchDto);
         imageService.update(reviewImgList, findReview, updatedReview);
