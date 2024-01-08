@@ -1,21 +1,21 @@
 package com.project1.domain.shopping.order.service.layer1;
 
-import com.project1.domain.member.service.Layer2.MemberVerifyService;
+import com.project1.domain.member.entity.Member;
+import com.project1.domain.member.service.Layer2.MemberVerificationService;
+import com.project1.domain.shopping.cart.entity.Cart;
+import com.project1.domain.shopping.cart.entity.CartItem;
+import com.project1.domain.shopping.cart.service.layer2.CartCrudService;
 import com.project1.domain.shopping.item.entity.Item;
 import com.project1.domain.shopping.item.service.layer2.ItemCrudService;
 import com.project1.domain.shopping.order.dto.OrderDto;
+import com.project1.domain.shopping.order.dto.OrderItemDto;
 import com.project1.domain.shopping.order.entity.DeliveryInfo;
+import com.project1.domain.shopping.order.entity.Order;
 import com.project1.domain.shopping.order.entity.OrderItem;
 import com.project1.domain.shopping.order.service.layer2.DeliveryInfoService;
 import com.project1.domain.shopping.order.service.layer2.OrderCrudService;
 import com.project1.global.exception.BusinessLogicException;
 import com.project1.global.exception.ExceptionCode;
-import com.project1.domain.member.entity.Member;
-import com.project1.domain.shopping.cart.entity.Cart;
-import com.project1.domain.shopping.cart.entity.CartItem;
-import com.project1.domain.shopping.cart.service.layer2.CartCrudService;
-import com.project1.domain.shopping.order.dto.OrderItemDto;
-import com.project1.domain.shopping.order.entity.Order;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -29,21 +29,21 @@ import java.util.stream.Collectors;
 @Service
 public class OrderService{
     private final OrderCrudService crudService;
-    private final MemberVerifyService memberVerifyService;
+    private final MemberVerificationService memberVerificationService;
     private final CartCrudService cartCrudService;
     private final ItemCrudService itemCrudService;
     private final DeliveryInfoService deliveryInfoService;
 
-    public OrderService(OrderCrudService crudService, MemberVerifyService memberVerifyService, CartCrudService cartCrudService, ItemCrudService itemCrudService, DeliveryInfoService deliveryInfoService) {
+    public OrderService(OrderCrudService crudService, MemberVerificationService memberVerificationService, CartCrudService cartCrudService, ItemCrudService itemCrudService, DeliveryInfoService deliveryInfoService) {
         this.crudService = crudService;
-        this.memberVerifyService = memberVerifyService;
+        this.memberVerificationService = memberVerificationService;
         this.cartCrudService = cartCrudService;
         this.itemCrudService = itemCrudService;
         this.deliveryInfoService = deliveryInfoService;
     }
     @Transactional
     public OrderDto.ResponseDto createOrder(OrderDto.PostDto postDto)   {
-        Member member = memberVerifyService.findTokenMember();
+        Member member = memberVerificationService.findTokenMember();
         DeliveryInfo info = deliveryInfoService.create(postDto,member );
         List<Item> itemList = getItemList(postDto);
         Cart cart = verifyMemberAndCart();
@@ -77,11 +77,27 @@ public class OrderService{
         Order order = crudService.update(orderNumber, patchDto);
         return crudService.entityToResponse(order);
     }
-    public void cancelOrder(long orderNumber)  {
-        // TODO : 구현필요
+    public OrderDto.ResponseDto cancelOrder(long orderNumber)  {
+        Order order = crudService.find(orderNumber);
+        order.setStatus(Order.Status.ORDER_CANCELED);
+        /* TODO : This must be seperated too. Or delayed.
+            Stage : DELIVERY_CANCELED -> (RETURN_PRODUCT) -> REFUND_PROGRESS
+         */
+        recoveryStocks(order);
+
+        return crudService.entityToResponse(order);
     }
+
+    private void recoveryStocks(Order order) {
+        for(OrderItem orderItem : order.getOrderItemList()){
+            Item item = orderItem.getItem();
+            item.setStock(item.getStock()+orderItem.getCount());
+            itemCrudService.save(item);
+        }
+    }
+
     public Page<OrderDto.ResponseDto> findMyOrders(int page, int size) {
-        Member member = memberVerifyService.findTokenMember();
+        Member member = memberVerificationService.findTokenMember();
         return crudService.findByName(member.getName(),page,size);
     }
     public OrderDto.ResponseDto findOrderDetails(long orderNumber) {
@@ -120,7 +136,7 @@ public class OrderService{
         order.setCart(cart);
     }
     private Cart verifyMemberAndCart() {
-        Member member = memberVerifyService.findTokenMember();
+        Member member = memberVerificationService.findTokenMember();
         Cart cart = cartCrudService.findCartByMember(member);
 
         if (cart.getMember().equals(member)) {
@@ -137,5 +153,4 @@ public class OrderService{
         }
         return itemList;
     }
-
 }

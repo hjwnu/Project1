@@ -13,8 +13,8 @@ public class AuthService {
     }
 // 로그아웃 누르면 DB에서 refresh Token 삭제
 
-    public void deleteRefreshToken(String username){
-        RefreshToken refreshToken = refreshTokenRepository.findByUsername(username);
+    public void deleteRefreshToken(String userName){
+        RefreshToken refreshToken = refreshTokenRepository.findByUsername(userName);
         refreshTokenRepository.delete(refreshToken);
     }
 }

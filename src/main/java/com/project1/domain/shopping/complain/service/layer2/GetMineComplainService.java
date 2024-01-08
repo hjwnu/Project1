@@ -1,6 +1,6 @@
 package com.project1.domain.shopping.complain.service.layer2;
 
-import com.project1.domain.member.service.Layer2.MemberVerifyService;
+import com.project1.domain.member.service.Layer2.MemberVerificationService;
 import com.project1.domain.shopping.complain.dto.ComplainResponseDto;
 import com.project1.domain.shopping.complain.entity.Complain;
 import com.project1.domain.shopping.complain.mapper.ComplainMapper;
@@ -16,8 +16,8 @@ public class GetMineComplainService
         extends GetMineService.GetMineServiceImpl<Complain, ComplainResponseDto> {
     private final ComplainMapper mapper;
 
-    protected GetMineComplainService(MemberVerifyService memberVerifyService, EntityManager entityManager, ComplainMapper mapper) {
-        super(memberVerifyService, entityManager, Complain.class);
+    protected GetMineComplainService(MemberVerificationService memberVerificationService, EntityManager entityManager, ComplainMapper mapper) {
+        super(memberVerificationService, entityManager, Complain.class);
         this.mapper = mapper;
     }
 

@@ -1,9 +1,9 @@
 package com.project1.domain.member.auth.jwt;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project1.domain.member.auth.refresh.RefreshTokenRepository;
 import com.project1.domain.member.dto.LoginDto;
 import com.project1.domain.member.entity.Member;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -24,7 +24,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     private final AuthenticationManager authenticationManager;
     private final JwtTokenizer jwtTokenizer;
-
     private final RefreshTokenRepository refreshTokenRepository;
 
     public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtTokenizer jwtTokenizer, RefreshTokenRepository refreshTokenRepository) {
@@ -81,7 +80,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String subject = member.getEmail();
         Date expiration = jwtTokenizer.getTokenExpiration(jwtTokenizer.getAccessTokenExpirationMinutes());
 
-        String base64EncodedSecretKey = jwtTokenizer.encodedBase64SecretKey(jwtTokenizer.getSecretKey());
+        String base64EncodedSecretKey = jwtTokenizer.encodedBase64SecretKey( jwtTokenizer.encodedBase64SecretKey(member.getEmail()));
 
         String accessToken = jwtTokenizer.generateAccessToken(claims, subject, expiration, base64EncodedSecretKey);
 
@@ -93,12 +92,13 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         String subject = member.getEmail();
         Date expiration = jwtTokenizer.getTokenExpiration(jwtTokenizer.getRefreshTokenExpirationMinutes());
-        String base64EncodedSecretKey = jwtTokenizer.encodedBase64SecretKey(jwtTokenizer.getSecretKey());
+        String base64EncodedSecretKey = jwtTokenizer.encodedBase64SecretKey(member.getEmail());
 
         String refreshToken = jwtTokenizer.generateRefreshToken(
                 subject,
                 expiration,
-                base64EncodedSecretKey);
+                base64EncodedSecretKey
+        );
 
         return refreshToken;
     }

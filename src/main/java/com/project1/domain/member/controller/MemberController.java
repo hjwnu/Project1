@@ -70,6 +70,12 @@ public class MemberController {
         SingleResponseDto<MemberResponseDto> responseDto = new SingleResponseDto<>(response,HttpStatus.OK);
         return ResponseEntity.ok(responseDto);
     }
+    @PostMapping("/search")
+    public ResponseEntity<SingleResponseDto<MemberResponseDto>> getMember(@RequestParam String name) {
+        MemberResponseDto response = memberService.getOtherProfile(name);
+        SingleResponseDto<MemberResponseDto> responseDto = new SingleResponseDto<>(response,HttpStatus.OK);
+        return ResponseEntity.ok(responseDto);
+    }
 
     //작성한 게시물 조회
     @GetMapping("/myReview")

@@ -53,10 +53,10 @@ public class OrderController {
         return new ResponseEntity<>(response, ok);
     }
 
-    @DeleteMapping("/{order-id}")
-    public ResponseEntity<HttpStatus> deleteOrder(@PathVariable("order-id") long orderId) {
-        orderService.cancelOrder(orderId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    @PostMapping("/{order-id}")
+    public ResponseEntity<SingleResponseDto<OrderDto.ResponseDto>> deleteOrder(@PathVariable("order-id") long orderId) {
+        SingleResponseDto<OrderDto.ResponseDto> response = new SingleResponseDto<>(orderService.cancelOrder(orderId),ok);
+        return new ResponseEntity<>(response,ok);
     }
 
 

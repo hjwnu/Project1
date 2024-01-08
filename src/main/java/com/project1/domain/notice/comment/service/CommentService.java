@@ -3,7 +3,7 @@ package com.project1.domain.notice.comment.service;
 import com.project1.domain.notice.comment.dto.CommentDto;
 import com.project1.domain.notice.comment.repository.CommentRepository;
 import com.project1.domain.member.entity.Member;
-import com.project1.domain.member.service.Layer2.MemberVerifyService;
+import com.project1.domain.member.service.Layer2.MemberVerificationService;
 import com.project1.domain.notice.comment.entity.Comment;
 import com.project1.domain.notice.comment.mapper.CommentMapper;
 import com.project1.global.exception.BusinessLogicException;
@@ -20,17 +20,17 @@ import java.util.List;
 public class CommentService {
     private final CommentRepository commentRepository;
     private final CommentMapper mapper;
-    private final MemberVerifyService memberVerifyService;
+    private final MemberVerificationService memberVerificationService;
 
-    public CommentService(CommentRepository commentRepository, CommentMapper mapper, MemberVerifyService memberVerifyService) {
+    public CommentService(CommentRepository commentRepository, CommentMapper mapper, MemberVerificationService memberVerificationService) {
         this.commentRepository = commentRepository;
         this.mapper = mapper;
-        this.memberVerifyService = memberVerifyService;
+        this.memberVerificationService = memberVerificationService;
     }
 
     public CommentDto.ResponseDto createComment(CommentDto.PostDto postDto){
         Comment comment = mapper.commentPostDtoToComment(postDto);
-        Member member = memberVerifyService.findTokenMember();
+        Member member = memberVerificationService.findTokenMember();
         comment.setMember(member);
         comment.setLikeCount(0L);
         commentRepository.save(comment);
@@ -43,7 +43,7 @@ public class CommentService {
     }
 
     public CommentDto.ResponseDto updateComment(Long id, CommentDto.PatchDto updatedComment) {
-        Member member = memberVerifyService.findTokenMember();
+        Member member = memberVerificationService.findTokenMember();
         Comment originComment = commentRepository.findById(updatedComment.getCommentId()).orElseThrow(() -> new BusinessLogicException(ExceptionCode.COMMENT_NOT_FOUND));
         Comment comment = mapper.commentPatchDtoToComment(updatedComment);
 
@@ -68,7 +68,7 @@ public class CommentService {
 
     public void deleteComment(Long id){
         Comment comment = commentRepository.findById(id).orElseThrow(() -> new BusinessLogicException(ExceptionCode.COMMENT_NOT_FOUND));
-        verifySameMember(memberVerifyService.findTokenMember(),comment);
+        verifySameMember(memberVerificationService.findTokenMember(),comment);
 
         commentRepository.delete(comment);
     }

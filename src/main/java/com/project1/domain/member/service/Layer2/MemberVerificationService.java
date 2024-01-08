@@ -1,9 +1,9 @@
 package com.project1.domain.member.service.Layer2;
 
-import com.project1.global.exception.BusinessLogicException;
-import com.project1.global.exception.ExceptionCode;
 import com.project1.domain.member.entity.Member;
 import com.project1.domain.member.repository.MemberRepository;
+import com.project1.global.exception.BusinessLogicException;
+import com.project1.global.exception.ExceptionCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,7 +13,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class MemberVerifyService {
+public class MemberVerificationService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -51,4 +51,5 @@ public class MemberVerifyService {
     public Member findMemberByName(String name) {
         return memberRepository.findMemberByName(name).orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
     }
+
 }

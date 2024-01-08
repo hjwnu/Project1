@@ -1,6 +1,6 @@
 package com.project1.domain.shopping.review.service.Layer2;
 
-import com.project1.domain.member.service.Layer2.MemberVerifyService;
+import com.project1.domain.member.service.Layer2.MemberVerificationService;
 import com.project1.domain.shopping.review.dto.ReviewDto;
 import com.project1.domain.shopping.review.entity.Review;
 import com.project1.domain.shopping.review.mapper.ReviewMapper;
@@ -14,8 +14,8 @@ public class GetMineReviewService
     extends GetMineService.GetMineServiceImpl<Review, ReviewDto.ReviewResponseDto> {
     private final ReviewMapper mapper;
 
-    protected GetMineReviewService(MemberVerifyService memberVerifyService, EntityManager entityManager, ReviewMapper mapper) {
-        super(memberVerifyService, entityManager, Review.class);
+    protected GetMineReviewService(MemberVerificationService memberVerificationService, EntityManager entityManager, ReviewMapper mapper) {
+        super(memberVerificationService, entityManager, Review.class);
         this.mapper = mapper;
     }
 

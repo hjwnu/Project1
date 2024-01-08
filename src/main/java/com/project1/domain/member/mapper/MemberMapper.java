@@ -2,7 +2,6 @@ package com.project1.domain.member.mapper;
 
 import com.project1.domain.member.dto.MemberPatchDto;
 import com.project1.domain.member.dto.MemberPostDto;
-import com.project1.domain.member.dto.MemberResponseDto;
 import com.project1.domain.member.entity.Member;
 import org.mapstruct.Mapper;
 
@@ -32,14 +31,5 @@ public interface MemberMapper {
             return member;
         }
 
-    default MemberResponseDto memberToMemberResponse(Member member){
-        MemberResponseDto response = new MemberResponseDto(
-                member.getEmail(),
-                member.getName(),
-                member.getPhone(),
-                member.getAddress()
-        );
-        return response;
-    }
 
 }

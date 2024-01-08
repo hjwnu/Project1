@@ -1,7 +1,6 @@
 package com.project1.domain.member.auth.jwt;
 
 import com.project1.domain.member.auth.userdetails.MemberAuthority;
-import com.project1.domain.member.auth.userdetails.UserDetailService;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -20,12 +19,10 @@ import java.util.Map;
 public class JwtVerificationFilter extends OncePerRequestFilter {
     private final JwtTokenizer jwtTokenizer;
     private final MemberAuthority memberAuthority;
-    private final UserDetailService userDetailService;
 
-    public JwtVerificationFilter(JwtTokenizer jwtTokenizer,MemberAuthority memberAuthority, UserDetailService userDetailService) {
+    public JwtVerificationFilter(JwtTokenizer jwtTokenizer,MemberAuthority memberAuthority) {
         this.jwtTokenizer = jwtTokenizer;
         this.memberAuthority = memberAuthority;
-        this.userDetailService = userDetailService;
     }
 
     // 인가 과정 filter

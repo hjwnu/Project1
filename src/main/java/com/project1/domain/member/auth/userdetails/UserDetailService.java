@@ -31,7 +31,6 @@ public class UserDetailService implements UserDetailsService {
         Optional<Member> optionalMember = memberRepository.findByEmail(username);
         Member findMember = optionalMember.orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + username));
 
-
         return new MemberDetails(findMember);
     }
 
@@ -43,7 +42,7 @@ public class UserDetailService implements UserDetailsService {
         this.username = username;
     }
 
-    public final class MemberDetails extends Member implements UserDetails {
+    public class MemberDetails extends Member implements UserDetails {
         MemberDetails(Member member) {
             setMemberId(member.getMemberId());
             setEmail(member.getEmail());

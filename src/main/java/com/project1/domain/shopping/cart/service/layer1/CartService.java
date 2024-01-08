@@ -1,6 +1,6 @@
 package com.project1.domain.shopping.cart.service.layer1;
 
-import com.project1.domain.member.service.Layer2.MemberVerifyService;
+import com.project1.domain.member.service.Layer2.MemberVerificationService;
 import com.project1.domain.shopping.cart.service.layer2.CartItemService;
 import com.project1.domain.shopping.item.entity.Item;
 import com.project1.domain.shopping.item.service.layer2.ItemCrudService;
@@ -20,13 +20,13 @@ import java.util.List;
 public class CartService{
     private final CartCrudService crudService;
     private final CartItemService cartItemService;
-    private final MemberVerifyService memberVerifyService;
+    private final MemberVerificationService memberVerificationService;
     private final ItemCrudService itemCrudService;
 
-    public CartService(CartCrudService crudService, CartItemService cartItemService, MemberVerifyService memberVerifyService, ItemCrudService itemCrudService) {
+    public CartService(CartCrudService crudService, CartItemService cartItemService, MemberVerificationService memberVerificationService, ItemCrudService itemCrudService) {
         this.crudService = crudService;
         this.cartItemService = cartItemService;
-        this.memberVerifyService = memberVerifyService;
+        this.memberVerificationService = memberVerificationService;
         this.itemCrudService = itemCrudService;
     }
 
@@ -59,7 +59,7 @@ public class CartService{
     }
 
     public Cart findCartByMember() {
-        Member member =  memberVerifyService.findTokenMember();
+        Member member =  memberVerificationService.findTokenMember();
         return crudService.findCartByMember(member);
     }
 

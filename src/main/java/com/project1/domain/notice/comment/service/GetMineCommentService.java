@@ -1,6 +1,6 @@
 package com.project1.domain.notice.comment.service;
 
-import com.project1.domain.member.service.Layer2.MemberVerifyService;
+import com.project1.domain.member.service.Layer2.MemberVerificationService;
 import com.project1.domain.notice.comment.dto.CommentDto;
 import com.project1.domain.notice.comment.entity.Comment;
 import com.project1.domain.notice.comment.mapper.CommentMapper;
@@ -16,9 +16,9 @@ import javax.persistence.TypedQuery;
 public class GetMineCommentService extends GetMineService.GetMineServiceImpl<Comment, CommentDto.ResponseDto> {
     private final CommentMapper mapper;
 
-    protected GetMineCommentService(MemberVerifyService memberVerifyService,
+    protected GetMineCommentService(MemberVerificationService memberVerificationService,
                                     EntityManager entityManager, CommentMapper mapper) {
-        super(memberVerifyService, entityManager,  Comment.class);
+        super(memberVerificationService, entityManager,  Comment.class);
         this.mapper = mapper;
     }
     @Override

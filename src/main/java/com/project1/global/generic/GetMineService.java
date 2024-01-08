@@ -1,6 +1,6 @@
 package com.project1.global.generic;
 
-import com.project1.domain.member.service.Layer2.MemberVerifyService;
+import com.project1.domain.member.service.Layer2.MemberVerificationService;
 import com.project1.global.exception.BusinessLogicException;
 import com.project1.global.exception.ExceptionCode;
 import com.project1.domain.member.entity.Member;
@@ -17,11 +17,11 @@ public interface GetMineService<E, R> {
     Page<R> getMine(int page, int size);
 
     abstract class GetMineServiceImpl<E,R> implements GetMineService<E, R> {
-        protected final MemberVerifyService memberVerifyService;
+        protected final MemberVerificationService memberVerificationService;
         protected final EntityManager entityManager;
         protected final Class<E> entityClass;
-        protected GetMineServiceImpl(MemberVerifyService memberVerifyService, EntityManager entityManager, Class<E> entityClass) {
-            this.memberVerifyService = memberVerifyService;
+        protected GetMineServiceImpl(MemberVerificationService memberVerificationService, EntityManager entityManager, Class<E> entityClass) {
+            this.memberVerificationService = memberVerificationService;
             this.entityManager = entityManager;
             this.entityClass = entityClass;
         }
@@ -53,7 +53,7 @@ public interface GetMineService<E, R> {
 
 
         private String getMemberName() {
-        Member member = memberVerifyService.findTokenMember();
+        Member member = memberVerificationService.findTokenMember();
         if (member != null) {
             return member.getName();
         } else {
