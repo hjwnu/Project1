@@ -60,16 +60,14 @@ public class ItemService {
     @Transactional
     public ItemDto.Response updateItem(ItemDto.Patch requestBody, List<MultipartFile> itemImgFileList) throws IOException {
         Item findItem = crudService.findEntity(requestBody.getItemId());
-        Item updatedItem =crudService.update(requestBody.getItemId(), requestBody);
-
-        itemImageService.updateImages(itemImgFileList, findItem, updatedItem);
-
+        Item updatedItem =crudService.update(requestBody.getItemId(),requestBody);
+        itemImageService.update(itemImgFileList, findItem, updatedItem);
         return crudService.entityToResponse(updatedItem);
     }
     @Transactional
     public void deleteItem(long id) {
        Item item = crudService.findEntity(id);
-       itemImageService.deleteImage(item);
+       itemImageService.delete(item);
        crudService.delete(id);
     }
 
@@ -81,13 +79,12 @@ public class ItemService {
         }
     }
     private void createItemImage(List<MultipartFile> itemImgFileList, Item item) throws IOException {
-        List<ItemImage> images = itemImageService.saveImages(itemImgFileList, item);
+        List<ItemImage> images = itemImageService.saveAll(itemImgFileList, item);
         item.setImages(images);
-        itemImageService.saveImages(images);
     }
     private void setImages(List<OnlyItemResponseDto> result) {
         List<Long> itemIds = result.stream().map(OnlyItemResponseDto::getItemId).collect(Collectors.toList());
-        Map<Long, List<ItemImageResponseDto>> imagesMap = itemImageService.fetchItemImages(itemIds);
+        Map<Long, List<ItemImageResponseDto>> imagesMap = itemImageService.fetchImages(itemIds);
 
         result.forEach(item -> item.setImageURLs(imagesMap.get(item.getItemId())));
     }

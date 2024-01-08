@@ -1,7 +1,9 @@
-package com.project1.domain.shopping.item.entity;
+package com.project1.domain.shopping.review.entity;
 
 import com.project1.global.generic.GenericImage;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
@@ -10,12 +12,12 @@ import javax.persistence.*;
 @Entity @Table
 @NoArgsConstructor
 @SuperBuilder
-public class ItemImage extends GenericImage {
+public class ReviewImage extends GenericImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column()
-    private Long itemImageId;
+    private Long reviewImageId;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ITEM_ID")
-    private Item item;
+    @JoinColumn(name = "REVIEW_ID")
+    private Review review;
 }

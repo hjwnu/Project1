@@ -5,14 +5,15 @@ import com.project1.domain.shopping.item.dto.ItemImageResponseDto;
 import com.project1.domain.shopping.item.entity.Item;
 import com.project1.domain.shopping.item.entity.ItemImage;
 import com.project1.domain.shopping.item.mapper.ItemMapper;
+import com.project1.global.generic.GenericImageService;
 import com.project1.global.utils.S3;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -21,19 +22,35 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 @Slf4j
-public class ItemImageService {
-    private final S3 S3;
-    private final ItemImageRepository repository;
+public class ItemImageService extends GenericImageService.GenericImageServiceImpl<Item, ItemImage, ItemImageResponseDto> {
     private final ItemMapper mapper;
-
+    private final ItemImageRepository repository;
+    private final String PATH = "images/item/";
     public ItemImageService(S3 S3, ItemImageRepository repository, ItemMapper mapper) {
-        this.S3 = S3;
-        this.repository = repository;
+        super(S3);
         this.mapper = mapper;
+        this.repository = repository;
     }
 
-    public Map<Long,List<ItemImageResponseDto>> fetchItemImages(List<Long> itemIds){
-        Map<Long,List<ItemImage>> imageMap = repository.fetchItemImages(itemIds);
+    @Override
+    protected JpaRepository<ItemImage, Long> getRepository() {
+        return repository;
+    }
+
+    @Override
+    protected List<ItemImage> getImages(Item item) {
+        return item.getImages();
+    }
+
+    @Override
+    protected void setImages(Item entity, List<ItemImage> images) {
+        entity.setImages(images);
+    }
+
+
+    @Override
+    public Map<Long, List<ItemImageResponseDto>> fetchImages(List<Long> ids) {
+        Map<Long, List<ItemImage>> imageMap = fetch(ids);
         return imageMap.entrySet().stream()
                 .collect(Collectors.toMap(
                         Map.Entry<Long,List<ItemImage>>::getKey,
@@ -42,74 +59,28 @@ public class ItemImageService {
                                 .collect(Collectors.toList())
                 ));
     }
-    public ItemImage uploadImage(MultipartFile file, Item item) throws IOException {
-        StringBuilder fileNameBuilder = new StringBuilder();
-        String path = "image/";
-        fileNameBuilder
-                .append(path)
+    @Override
+    protected ItemImage imageBuild(Item item, MultipartFile file, String name) {
+        return ItemImage.builder().item(item)
+                .originalName(file.getOriginalFilename())
+                .imageName(name)
+                .path(PATH)
+                .build();
+    }
+
+    @Override
+    protected @NotNull String generateFileName(MultipartFile file, Item item) {
+        return new StringBuilder()
+                .append(PATH)
                 .append(item.getCategory().toUpperCase())
                 .append("_")
                 .append(UUID.randomUUID().toString(), 0, 10)
                 .append("_")
-                .append(file.getOriginalFilename());
-        String fileName = fileNameBuilder.toString();
-        String savedPath = S3.upload(file, fileName);
-        log.info("Saved Path : "+savedPath);
-
-        return ItemImage.builder().item(item)
-                .originalName(file.getOriginalFilename())
-                .imageName(fileName)
-                .path(path)
-                .build();
+                .append(file.getOriginalFilename())
+                .toString();
     }
-
-    public void deleteImage(Item item) {
-        List<ItemImage> images = item.getImages();
-        for (ItemImage image : images) {
-            S3.deleteFile(image.getImageName());
-        }
+    @Override
+    protected Map<Long, List<ItemImage>> fetch(List<Long> ids) {
+        return repository.fetchItemImages(ids);
     }
-
-    public List<ItemImage> saveImage(Item item, List<MultipartFile> itemImgFileList) throws IOException {
-        List<ItemImage> images = new ArrayList<>();
-        for (int i = 0; i < itemImgFileList.size(); i++) {
-            MultipartFile file = itemImgFileList.get(i);
-            ItemImage image = uploadImage(file, item);
-            if (i == 0) {
-                image.setRepresentationImage("YES");
-            } else {
-                image.setRepresentationImage("NO");
-            }
-            images.add(image);
-        }
-        return images;
-    }
-
-    public List<ItemImage> saveImages(List<MultipartFile> itemImgFileList, Item item) throws IOException {
-        List<ItemImage> images = new ArrayList<>();
-        if (itemImgFileList != null){
-            images = saveImage(item, itemImgFileList);
-        }
-        return images;
-    }
-
-    public void saveImages(List<ItemImage> images) {
-        if(images.size()>0){
-            repository.saveAll(images);}
-    }
-    @Transactional
-    public void updateImages(List<MultipartFile> itemImgFileList, Item findItem, Item updatedItem) throws IOException {
-
-        //새로운 파일 이미지가 있다면, 새로 추가
-        if (itemImgFileList != null) {
-            for (MultipartFile image : itemImgFileList) {
-                ItemImage img = uploadImage(image, updatedItem);
-                updatedItem.addImage(img);
-            }
-            updatedItem.setRepresentationImage();
-            repository.saveAll(updatedItem.getImages());
-        }
-    }
-
-
 }

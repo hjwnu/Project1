@@ -10,7 +10,7 @@ import com.project1.domain.notice.comment.dto.CommentDto;
 import com.project1.domain.notice.comment.entity.Comment;
 import com.project1.domain.shopping.complain.dto.ComplainResponsesDto;
 import com.project1.domain.shopping.complain.entity.Complain;
-import com.project1.domain.shopping.review.dto.ReviewResponseDto;
+import com.project1.domain.shopping.review.dto.ReviewDto;
 import com.project1.domain.shopping.review.entity.Review;
 import com.project1.global.response.MultiResponseDto;
 import com.project1.global.response.SingleResponseDto;
@@ -73,9 +73,9 @@ public class MemberController {
 
     //작성한 게시물 조회
     @GetMapping("/myReview")
-    public ResponseEntity<MultiResponseDto<ReviewResponseDto>> getMyReviews(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "5") int size) {
+    public ResponseEntity<MultiResponseDto<ReviewDto.ReviewResponseDto>> getMyReviews(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "5") int size) {
         Page<?> myReviews = getMineService.getMine(page, size, Review.class);
-        MultiResponseDto<ReviewResponseDto> response = (MultiResponseDto<ReviewResponseDto>) new MultiResponseDto<>(myReviews, HttpStatus.OK);
+        MultiResponseDto<ReviewDto.ReviewResponseDto> response = (MultiResponseDto<ReviewDto.ReviewResponseDto>) new MultiResponseDto<>(myReviews, HttpStatus.OK);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

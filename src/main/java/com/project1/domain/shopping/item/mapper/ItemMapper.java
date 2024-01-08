@@ -58,8 +58,6 @@ public interface ItemMapper
 
     default ItemImageResponseDto imageToResponse(ItemImage image) {
         return ItemImageResponseDto.builder()
-                . itemId(image.getItem().getItemId())
-                .itemImageId(image.getItemImageId())
                 .imageName(image.getImageName())
                 .URL(image.getBaseUrl() + image.getImageName())
                 .representationImage(image.getRepresentationImage())

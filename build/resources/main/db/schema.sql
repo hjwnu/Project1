@@ -176,5 +176,15 @@ create table item_image (
     last_modified_at timestamp,
     foreign key (item_id) references item(item_id)
 );
-
+create table review_image (
+                            review_image_id bigint auto_increment primary key,
+                            review_id bigint,
+                            image_name varchar(500),
+                            original_name varchar(500),
+                            path varchar(500),
+                            representation_image varchar(3),
+                            created_at timestamp,
+                            last_modified_at timestamp,
+                            foreign key (review_id) references review(review_id)
+);
 

@@ -1,14 +1,14 @@
-package com.project1.domain.shopping.item.dto;
+package com.project1.domain.shopping.review.dto;
 
 import lombok.*;
-
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ItemImageResponseDto {
+public class ReviewImageResponseDto {
     String imageName;
     String URL;
     String representationImage;
 }
+

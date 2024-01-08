@@ -6,6 +6,7 @@ import com.project1.domain.shopping.item.entity.Item;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @Setter
@@ -38,6 +39,9 @@ public class Review extends Auditable {
 
     @Column
     private int score;
+
+    @OneToMany(mappedBy = "review", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<ReviewImage> Images;
 
     public void addLike(UserVote.VoteType voteType) {
         if(voteType.equals(UserVote.VoteType.LIKE)) {

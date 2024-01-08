@@ -2,13 +2,14 @@ package com.project1.domain.shopping.item.repository;
 
 import com.project1.domain.shopping.item.entity.ItemImage;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.project1.domain.shopping.item.entity.QItemImage.itemImage;
-
+@Repository
 public interface CustomImageRepository {
     Map<Long, List<ItemImage>> fetchItemImages(List<Long> itemIds);
 

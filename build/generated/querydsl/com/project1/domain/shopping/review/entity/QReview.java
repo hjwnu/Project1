@@ -29,6 +29,8 @@ public class QReview extends EntityPathBase<Review> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
+    public final ListPath<ReviewImage, QReviewImage> Images = this.<ReviewImage, QReviewImage>createList("Images", ReviewImage.class, QReviewImage.class, PathInits.DIRECT2);
+
     public final com.project1.domain.shopping.item.entity.QItem item;
 
     public final NumberPath<Long> likeCount = createNumber("likeCount", Long.class);

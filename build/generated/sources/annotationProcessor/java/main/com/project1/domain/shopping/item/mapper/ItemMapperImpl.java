@@ -6,8 +6,8 @@ import com.project1.domain.shopping.item.dto.ItemDto.Response;
 import com.project1.domain.shopping.item.dto.OnlyItemResponseDto;
 import com.project1.domain.shopping.item.entity.Item;
 import com.project1.domain.shopping.item.entity.Item.ItemBuilder;
-import com.project1.domain.shopping.review.dto.ReviewResponseDto;
-import com.project1.domain.shopping.review.dto.ReviewResponseDto.ReviewResponseDtoBuilder;
+import com.project1.domain.shopping.review.dto.ReviewDto.ReviewResponseDto;
+import com.project1.domain.shopping.review.dto.ReviewDto.ReviewResponseDto.ReviewResponseDtoBuilder;
 import com.project1.domain.shopping.review.entity.Review;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-01-05T13:52:36+0900",
+    date = "2024-01-08T13:41:46+0900",
     comments = "version: 1.4.2.Final, compiler: IncrementalProcessingEnvironment from gradle-language-java-8.2.1.jar, environment: Java 17.0.9 (Amazon.com Inc.)"
 )
 @Component

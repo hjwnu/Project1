@@ -1,7 +1,7 @@
 package com.project1.domain.shopping.review.service.Layer2;
 
 import com.project1.domain.member.service.Layer2.MemberVerifyService;
-import com.project1.domain.shopping.review.dto.ReviewResponseDto;
+import com.project1.domain.shopping.review.dto.ReviewDto;
 import com.project1.domain.shopping.review.entity.Review;
 import com.project1.domain.shopping.review.mapper.ReviewMapper;
 import com.project1.global.generic.GetMineService;
@@ -11,7 +11,7 @@ import javax.persistence.EntityManager;
 
 @Service
 public class GetMineReviewService
-    extends GetMineService.GetMineServiceImpl<Review, ReviewResponseDto> {
+    extends GetMineService.GetMineServiceImpl<Review, ReviewDto.ReviewResponseDto> {
     private final ReviewMapper mapper;
 
     protected GetMineReviewService(MemberVerifyService memberVerifyService, EntityManager entityManager, ReviewMapper mapper) {
@@ -20,12 +20,12 @@ public class GetMineReviewService
     }
 
     @Override
-    protected ReviewResponseDto entityToResponseDto(Review review) {
+    protected ReviewDto.ReviewResponseDto entityToResponseDto(Review review) {
         return mapper.entityToResponseDto(review);
     }
 
     @Override
-    protected void setMemberAndItem(ReviewResponseDto reviewResponseDto, Review review) {
+    protected void setMemberAndItem(ReviewDto.ReviewResponseDto reviewResponseDto, Review review) {
         reviewResponseDto.setItemName(review.getItem().getName());
         reviewResponseDto.setMemberName(review.getMember().getName());
     }

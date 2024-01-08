@@ -6,7 +6,7 @@ import com.project1.domain.shopping.item.dto.OnlyItemResponseDto;
 import com.project1.domain.shopping.item.entity.Item;
 import com.project1.domain.shopping.item.mapper.ItemMapper;
 import com.project1.domain.shopping.item.repository.ItemRepository;
-import com.project1.domain.shopping.review.dto.ReviewResponseDto;
+import com.project1.domain.shopping.review.dto.ReviewDto;
 import com.project1.domain.shopping.review.entity.Review;
 import com.project1.domain.shopping.review.mapper.ReviewMapper;
 import com.project1.global.generic.GenericCrudService;
@@ -65,16 +65,16 @@ public class ItemCrudService
 
     public ItemDto.Response entityToResponse(Item entity){
         OnlyItemResponseDto onlyitemResponseDto = mapper.itemToOnlyItemResponseDto(entity);
-        List<ReviewResponseDto> reviewResponseList = getReviewsResponseDto(entity);
+        List<ReviewDto.ReviewResponseDto> reviewResponseList = getReviewsResponseDto(entity);
         return new ItemDto.Response(onlyitemResponseDto, reviewResponseList);
     }
 
-    private List<ReviewResponseDto> getReviewsResponseDto(Item item) {
-        List<ReviewResponseDto> reviewResponseDtoList = new ArrayList<>();
+    private List<ReviewDto.ReviewResponseDto> getReviewsResponseDto(Item item) {
+        List<ReviewDto.ReviewResponseDto> reviewResponseDtoList = new ArrayList<>();
         List<Review> reviewList =  item.getReviews();
         if(reviewList != null) {
             for (Review review : reviewList) {
-                ReviewResponseDto reviewResponseDto =
+                ReviewDto.ReviewResponseDto reviewResponseDto =
                         reviewMapper.entityToResponseDto(review);
                 reviewResponseDtoList.add(reviewResponseDto);
             }

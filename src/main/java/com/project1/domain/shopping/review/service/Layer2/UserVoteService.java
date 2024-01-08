@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
-@Service @Slf4j
+@Service @Slf4j @Transactional
 public class UserVoteService {
     private final UserVoteRepository repository;
 

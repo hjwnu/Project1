@@ -1,6 +1,6 @@
 package com.project1.domain.shopping.item.dto;
 
-import com.project1.domain.shopping.review.dto.ReviewResponseDto;
+import com.project1.domain.shopping.review.dto.ReviewDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -62,6 +62,6 @@ public class ItemDto {
     @AllArgsConstructor
     public static class Response {
         private OnlyItemResponseDto item;
-        private List<ReviewResponseDto> reviews;
+        private List<ReviewDto.ReviewResponseDto> reviews;
     }
 }
