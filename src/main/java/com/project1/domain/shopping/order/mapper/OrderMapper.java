@@ -31,6 +31,7 @@ public interface OrderMapper
         for (OrderItem orderItem : orderItemList) {
             OrderItemDto orderItemDto = new OrderItemDto();
             orderItemDto.setItemId(orderItem.getItem().getItemId());
+            orderItemDto.setItemName(orderItem.getItem().getName());
             orderItemDto.setCount(orderItem.getCount());
 
             dtoList.add(orderItemDto);

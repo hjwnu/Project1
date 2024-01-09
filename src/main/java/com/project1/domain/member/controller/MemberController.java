@@ -8,7 +8,7 @@ import com.project1.domain.member.service.Layer1.GetMineService;
 import com.project1.domain.member.service.Layer1.MemberService;
 import com.project1.domain.notice.comment.dto.CommentDto;
 import com.project1.domain.notice.comment.entity.Comment;
-import com.project1.domain.shopping.complain.dto.ComplainResponsesDto;
+import com.project1.domain.shopping.complain.dto.ComplainDto;
 import com.project1.domain.shopping.complain.entity.Complain;
 import com.project1.domain.shopping.review.dto.ReviewDto;
 import com.project1.domain.shopping.review.entity.Review;
@@ -88,17 +88,15 @@ public class MemberController {
     //작성한 댓글 조회
     @GetMapping("/myComment")
     public ResponseEntity<MultiResponseDto<CommentDto.ResponseDto>> getMyComments(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "5") int size) {
-        
         Page<?> myComments = getMineService.getMine(page,size, Comment.class);
         MultiResponseDto<CommentDto.ResponseDto> response = (MultiResponseDto<CommentDto.ResponseDto>) new MultiResponseDto<>(myComments, HttpStatus.OK);
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
     //작성한  문의 조회
     @GetMapping("/myComplain")
-    public ResponseEntity<MultiResponseDto<ComplainResponsesDto>> getMyComplains(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "5") int size) {
-        
+    public ResponseEntity<MultiResponseDto<ComplainDto.ComplainResponsesDto>> getMyComplains(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "5") int size) {
         Page<?> myComplains = getMineService.getMine(page,size, Complain.class);
-        MultiResponseDto<ComplainResponsesDto> response = (MultiResponseDto<ComplainResponsesDto>) new MultiResponseDto<>(myComplains, HttpStatus.OK);
+        MultiResponseDto<ComplainDto.ComplainResponsesDto> response = (MultiResponseDto<ComplainDto.ComplainResponsesDto>) new MultiResponseDto<>(myComplains, HttpStatus.OK);
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 }

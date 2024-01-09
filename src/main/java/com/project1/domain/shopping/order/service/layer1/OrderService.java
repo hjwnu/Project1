@@ -14,6 +14,7 @@ import com.project1.domain.shopping.order.entity.Order;
 import com.project1.domain.shopping.order.entity.OrderItem;
 import com.project1.domain.shopping.order.service.layer2.DeliveryInfoService;
 import com.project1.domain.shopping.order.service.layer2.OrderCrudService;
+import com.project1.domain.shopping.order.service.layer2.OrderItemService;
 import com.project1.global.exception.BusinessLogicException;
 import com.project1.global.exception.ExceptionCode;
 import org.jetbrains.annotations.NotNull;
@@ -29,13 +30,15 @@ import java.util.stream.Collectors;
 @Service
 public class OrderService{
     private final OrderCrudService crudService;
+    private final OrderItemService orderItemService;
     private final MemberVerificationService memberVerificationService;
     private final CartCrudService cartCrudService;
     private final ItemCrudService itemCrudService;
     private final DeliveryInfoService deliveryInfoService;
 
-    public OrderService(OrderCrudService crudService, MemberVerificationService memberVerificationService,  CartCrudService cartCrudService, ItemCrudService itemCrudService, DeliveryInfoService deliveryInfoService) {
+    public OrderService(OrderCrudService crudService, OrderItemService orderItemService, MemberVerificationService memberVerificationService, CartCrudService cartCrudService, ItemCrudService itemCrudService, DeliveryInfoService deliveryInfoService) {
         this.crudService = crudService;
+        this.orderItemService = orderItemService;
         this.memberVerificationService = memberVerificationService;
         this.cartCrudService = cartCrudService;
         this.itemCrudService = itemCrudService;
@@ -44,12 +47,13 @@ public class OrderService{
     @Transactional
     public OrderDto.ResponseDto createOrder(OrderDto.PostDto postDto)   {
         Member member = memberVerificationService.findTokenMember();
+        Cart cart = verifyMemberAndCart();
         DeliveryInfo info = deliveryInfoService.create(postDto,member);
         List<Item> itemList = getItemList(postDto);
-        Cart cart = verifyMemberAndCart();
 
-        Order order = crudService.create(postDto,cart,member, info,itemList);
-
+        List<OrderItem> list = orderItemService.orderItemDtoToEntityList(postDto, itemList);
+        Order order = crudService.create(cart,member, info,list);
+        orderItemService.saveAll(order);
         /*fixme:
             The entire ordering process works in this method. This makes it difficult to change the appropriate order status.
             Also, If an exception occurs in the middle stage, it is difficult to catch.
@@ -146,6 +150,4 @@ public class OrderService{
         }
         return itemList;
     }
-
-
 }

@@ -1,7 +1,7 @@
 package com.project1.domain.shopping.complain.service.layer2;
 
 import com.project1.domain.member.service.Layer2.MemberVerificationService;
-import com.project1.domain.shopping.complain.dto.ComplainResponseDto;
+import com.project1.domain.shopping.complain.dto.ComplainDto;
 import com.project1.domain.shopping.complain.entity.Complain;
 import com.project1.domain.shopping.complain.mapper.ComplainMapper;
 import com.project1.global.generic.GetMineService;
@@ -13,7 +13,7 @@ import javax.persistence.EntityManager;
 @Service
 @Transactional
 public class GetMineComplainService
-        extends GetMineService.GetMineServiceImpl<Complain, ComplainResponseDto> {
+        extends GetMineService.GetMineServiceImpl<Complain, ComplainDto.ComplainResponseDto> {
     private final ComplainMapper mapper;
 
     protected GetMineComplainService(MemberVerificationService memberVerificationService, EntityManager entityManager, ComplainMapper mapper) {
@@ -22,12 +22,12 @@ public class GetMineComplainService
     }
 
     @Override
-    protected ComplainResponseDto entityToResponseDto(Complain complain) {
+    protected ComplainDto.ComplainResponseDto entityToResponseDto(Complain complain) {
         return mapper.entityToResponseDto(complain);
     }
 
     @Override
-    protected void setMemberAndItem(ComplainResponseDto complainResponseDto, Complain complain) {
+    protected void setMemberAndItem(ComplainDto.ComplainResponseDto complainResponseDto, Complain complain) {
         complainResponseDto.setItemName(complain.getItem().getName());
         complainResponseDto.setName(complain.getMember().getName());
     }

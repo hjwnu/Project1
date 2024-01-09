@@ -1,11 +1,8 @@
 package com.project1.domain.shopping.complain.controller;
 
+import com.project1.domain.shopping.complain.dto.*;
 import com.project1.domain.shopping.complain.service.layer2.ComplainCrudService;
 import com.project1.global.response.SingleResponseDto;
-import com.project1.domain.shopping.complain.dto.ComplainPatchDto;
-import com.project1.domain.shopping.complain.dto.ComplainPostDto;
-import com.project1.domain.shopping.complain.dto.ComplainResponseDto;
-import com.project1.domain.shopping.complain.dto.ComplainResponsesDto;
 import com.project1.domain.shopping.complain.service.layer1.ComplainService;
 import com.project1.global.response.MultiResponseDto;
 import org.springframework.data.domain.Page;
@@ -31,30 +28,30 @@ public class ComplainController {
     }
 
     @PostMapping ("/new")
-    public ResponseEntity<SingleResponseDto<ComplainResponseDto>> postComplain(@RequestBody @Valid ComplainPostDto complainPostDto) {
-        ComplainResponseDto response = complainService.createComplain(complainPostDto);
-        SingleResponseDto<ComplainResponseDto> responses =  new SingleResponseDto<>(response,ok);
+    public ResponseEntity<SingleResponseDto<ComplainDto.ComplainResponseDto>> postComplain(@RequestBody @Valid ComplainDto.ComplainPostDto complainPostDto) {
+        ComplainDto.ComplainResponseDto response = complainService.createComplain(complainPostDto);
+        SingleResponseDto<ComplainDto.ComplainResponseDto> responses =  new SingleResponseDto<>(response,ok);
         return new ResponseEntity<>(responses, ok);
     }
     @GetMapping ("{complain-id}")
-    public ResponseEntity<SingleResponseDto<ComplainResponseDto>> getComplain(@PathVariable("complain-id") @Positive long complainId) {
-        ComplainResponseDto response = crudService.getResponse(complainId);
-        SingleResponseDto<ComplainResponseDto> responses =  new SingleResponseDto<>(response,ok);
+    public ResponseEntity<SingleResponseDto<ComplainDto.ComplainResponseDto>> getComplain(@PathVariable("complain-id") @Positive long complainId) {
+        ComplainDto.ComplainResponseDto response = crudService.getResponse(complainId);
+        SingleResponseDto<ComplainDto.ComplainResponseDto> responses =  new SingleResponseDto<>(response,ok);
         return new ResponseEntity<>(responses, ok);
     }
     @GetMapping("")
-    public ResponseEntity<MultiResponseDto<ComplainResponsesDto>> getComplains(@RequestParam(name = "page", defaultValue = "1") int page,
-                                       @RequestParam(name = "size", defaultValue = "10") int size){
-        Page<ComplainResponsesDto> pageComplains = crudService.findAll(page,size);
-        MultiResponseDto<ComplainResponsesDto> response = new MultiResponseDto<>(pageComplains, HttpStatus.OK);
+    public ResponseEntity<MultiResponseDto<ComplainDto.ComplainResponsesDto>> getComplains(@RequestParam(name = "page", defaultValue = "1") int page,
+                                                                                           @RequestParam(name = "size", defaultValue = "10") int size){
+        Page<ComplainDto.ComplainResponsesDto> pageComplains = crudService.findAll(page,size);
+        MultiResponseDto<ComplainDto.ComplainResponsesDto> response = new MultiResponseDto<>(pageComplains, HttpStatus.OK);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
     @PatchMapping("/{complain-id}")
-    public ResponseEntity<SingleResponseDto<ComplainResponseDto> > patchComplain(@PathVariable("complain-id") @Positive long complainId,
-                                    @Valid @RequestBody ComplainPatchDto complainPatchDto){
-        ComplainResponseDto response = crudService.entityToResponse(crudService.update(complainId, complainPatchDto));
+    public ResponseEntity<SingleResponseDto<ComplainDto.ComplainResponseDto> > patchComplain(@PathVariable("complain-id") @Positive long complainId,
+                                                                                             @Valid @RequestBody ComplainDto.ComplainPatchDto complainPatchDto){
+        ComplainDto.ComplainResponseDto response = crudService.entityToResponse(crudService.update(complainId, complainPatchDto));
 
-        SingleResponseDto<ComplainResponseDto> responses =  new SingleResponseDto<>(response,ok);
+        SingleResponseDto<ComplainDto.ComplainResponseDto> responses =  new SingleResponseDto<>(response,ok);
         return new ResponseEntity<>(responses, ok);
     }
     @DeleteMapping("/{complain-id}")

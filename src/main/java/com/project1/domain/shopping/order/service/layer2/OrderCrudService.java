@@ -4,7 +4,6 @@ import com.project1.domain.member.auth.jwt.JwtTokenizer;
 import com.project1.domain.shopping.cart.entity.Cart;
 import com.project1.domain.shopping.order.repository.OrderRepository;
 import com.project1.domain.member.entity.Member;
-import com.project1.domain.shopping.item.entity.Item;
 import com.project1.domain.shopping.order.dto.OrderDto;
 import com.project1.domain.shopping.order.entity.DeliveryInfo;
 import com.project1.domain.shopping.order.entity.Order;
@@ -36,8 +35,8 @@ public class OrderCrudService
         this.jwtTokenizer = jwtTokenizer;
     }
 
-    public Order create(OrderDto.PostDto postDto, Cart cart, Member member, DeliveryInfo info, List<Item> item) {
-        Order order = postDtoToEntity(postDto, cart, member, info, item);
+    public Order create( Cart cart, Member member, DeliveryInfo info, List<OrderItem> item) {
+        Order order = postDtoToEntity(cart, member, info, item);
         return getRepository().save(order);
     }
 
@@ -78,27 +77,16 @@ public class OrderCrudService
         decodePrivacy(responseDto);
         return responseDto;
     }
-    private Order postDtoToEntity(OrderDto.PostDto postDto, Cart cart, Member member, DeliveryInfo info, List<Item> item) {
-        List<OrderItem> list = orderItemDtoToEntityList(postDto, item);
+    private Order postDtoToEntity(Cart cart, Member member, DeliveryInfo info, List<OrderItem> itemList) {
         return Order.builder()
                 .status(Order.Status.ORDER_PLACED)
-                .orderItemList(list)
+                .orderItemList(itemList)
                 .member(member)
                 .cart(cart)
                 .deliveryInfo(info)
                 .build();
     }
-    private List<OrderItem> orderItemDtoToEntityList(OrderDto.PostDto postDto, List<Item> items) {
-        return postDto.getOrderItemList().stream()
-                .map(dto -> new OrderItem(
-                        items.stream()
-                                .filter(item -> item.getItemId().equals(dto.getItemId()))
-                                .findFirst()
-                                .orElseThrow(() -> new IllegalArgumentException("Invalid item ID")),
-                        dto.getCount()))
-                .collect(Collectors.toList());
 
-    }
     private void decodePrivacy(OrderDto.ResponseDto responseDto) {
         responseDto.setAddress(jwtTokenizer.dataEnDecrypt(responseDto.getAddress(), 2));
         responseDto.setPhone(jwtTokenizer.dataEnDecrypt(responseDto.getPhone(), 2));

@@ -48,9 +48,9 @@ INSERT INTO orders  VALUES (202309120001, 1,101, 101, 101,null,NOW(),NOW());
 INSERT INTO orders VALUES (202309130002, 1,102,101,101,null,NOW(),NOW());
 INSERT INTO orders VALUES (202309140001, 1,103,101,101,null,NOW(),NOW());
 
-insert into order_item values(101, 101, 202309120001, 3);
-insert into order_item values(102, 102, 202309130002, 3);
-insert into order_item values(103, 103, 202309140001, 3);
+insert into order_item values(101, 101, 202309120001, 3,now(),now());
+insert into order_item values(102, 102, 202309130002, 3,now(),now());
+insert into order_item values(103, 103, 202309140001, 3,now(),now());
 
 INSERT INTO REVIEW VALUES (101, 101, 101, '좋은 상품입니다.', 3, 5, 4,NOW(), NOW());
 INSERT INTO REVIEW VALUES (102, 102, 101, '키보드 별로에요',14, 3, 4,NOW(), NOW());

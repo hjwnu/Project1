@@ -1,7 +1,6 @@
 package com.project1.domain.shopping.complain.service.layer1;
 
-import com.project1.domain.shopping.complain.dto.ComplainPostDto;
-import com.project1.domain.shopping.complain.dto.ComplainResponseDto;
+import com.project1.domain.shopping.complain.dto.ComplainDto;
 import com.project1.domain.shopping.complain.entity.Complain;
 import com.project1.domain.shopping.complain.service.layer2.ComplainCrudService;
 import com.project1.domain.member.entity.Member;
@@ -21,7 +20,7 @@ public class ComplainService {
         this.itemCrudService = itemCrudService;
         this.memberVerificationService = memberVerificationService;
     }
-    public ComplainResponseDto createComplain(ComplainPostDto complainPostDto) {
+    public ComplainDto.ComplainResponseDto createComplain(ComplainDto.ComplainPostDto complainPostDto) {
 
         Complain complain = crudService.create(complainPostDto);
         Item item = itemCrudService.findEntity(complainPostDto.getItemId());

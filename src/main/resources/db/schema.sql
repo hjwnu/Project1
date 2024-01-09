@@ -160,7 +160,9 @@ create table order_item (
                             order_id bigint,
                             foreign key (order_id) references orders (order_id),
                             count bigint,
-                            foreign key (item_id) references item (item_id)
+                            foreign key (item_id) references item (item_id),
+                            CREATED_AT TIMESTAMP,
+                            LAST_MODIFIED_AT TIMESTAMP
 );
 
 

@@ -1,11 +1,8 @@
 package com.project1.domain.shopping.complain.service.layer2;
 
+import com.project1.domain.shopping.complain.dto.*;
 import com.project1.global.generic.GenericCrudService;
 import com.project1.global.generic.GenericMapper;
-import com.project1.domain.shopping.complain.dto.ComplainPatchDto;
-import com.project1.domain.shopping.complain.dto.ComplainPostDto;
-import com.project1.domain.shopping.complain.dto.ComplainResponseDto;
-import com.project1.domain.shopping.complain.dto.ComplainResponsesDto;
 import com.project1.domain.shopping.complain.entity.Complain;
 import com.project1.domain.shopping.complain.mapper.ComplainMapper;
 import com.project1.domain.shopping.complain.repository.ComplainRepository;
@@ -21,7 +18,7 @@ import java.util.List;
 @Service
 @Transactional
 public class ComplainCrudService
-        extends GenericCrudService.GenericCrud<Complain, ComplainPostDto, ComplainResponseDto, ComplainPatchDto, Long> {
+        extends GenericCrudService.GenericCrud<Complain, ComplainDto.ComplainPostDto, ComplainDto.ComplainResponseDto, ComplainDto.ComplainPatchDto, Long> {
     private final ComplainRepository complainRepository;
 
     private final ComplainMapper mapper;
@@ -39,7 +36,7 @@ public class ComplainCrudService
         newEntity.setComplainId(aLong);
     }
     @Override
-    protected GenericMapper<Complain, ComplainPostDto, ComplainResponseDto, ComplainPatchDto, Long> getMapper() {
+    protected GenericMapper<Complain, ComplainDto.ComplainPostDto, ComplainDto.ComplainResponseDto, ComplainDto.ComplainPatchDto, Long> getMapper() {
         return mapper;
     }
     @Override
@@ -47,8 +44,8 @@ public class ComplainCrudService
         return complainRepository.findAllByMember_Name(str);
     }
 
-    public Page<ComplainResponsesDto> findAll(int page, int size) {
-        List<ComplainResponsesDto> list = mapper.complainsToComplainResponsesDto(findList(page, size));
+    public Page<ComplainDto.ComplainResponsesDto> findAll(int page, int size) {
+        List<ComplainDto.ComplainResponsesDto> list = mapper.complainsToComplainResponsesDto(findList(page, size));
 
         return new PageImpl<>(list, PageRequest.of(page, size), list.size());
         }

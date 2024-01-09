@@ -1,9 +1,9 @@
 package com.project1.domain.shopping.complain.mapper;
 
 import com.project1.domain.member.entity.Member;
-import com.project1.domain.shopping.complain.dto.ComplainPatchDto;
-import com.project1.domain.shopping.complain.dto.ComplainPostDto;
-import com.project1.domain.shopping.complain.dto.ComplainResponseDto;
+import com.project1.domain.shopping.complain.dto.ComplainDto.ComplainPatchDto;
+import com.project1.domain.shopping.complain.dto.ComplainDto.ComplainPostDto;
+import com.project1.domain.shopping.complain.dto.ComplainDto.ComplainResponseDto;
 import com.project1.domain.shopping.complain.entity.Complain;
 import com.project1.domain.shopping.item.entity.Item;
 import com.project1.domain.shopping.item.entity.Item.ItemBuilder;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-01-09T04:17:55+0900",
+    date = "2024-01-09T09:50:34+0900",
     comments = "version: 1.4.2.Final, compiler: IncrementalProcessingEnvironment from gradle-language-java-8.2.1.jar, environment: Java 17.0.9 (Amazon.com Inc.)"
 )
 @Component
