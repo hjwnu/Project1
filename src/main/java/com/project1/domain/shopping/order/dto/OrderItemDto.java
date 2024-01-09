@@ -1,14 +1,12 @@
 package com.project1.domain.shopping.order.dto;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
-@Setter
-@NoArgsConstructor
+@Setter @Builder
+@NoArgsConstructor @AllArgsConstructor
 public class OrderItemDto {
-
     private Long itemId;
+    private String itemName;
     private Long count;
 }
