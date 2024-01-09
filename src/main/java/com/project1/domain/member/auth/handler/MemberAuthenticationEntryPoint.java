@@ -71,7 +71,7 @@ public class MemberAuthenticationEntryPoint implements AuthenticationEntryPoint 
     private String delegateRefreshToken(Member member) {
         String subject = member.getEmail();
         Date expiration = jwtTokenizer.getTokenExpiration(jwtTokenizer.getRefreshTokenExpirationMinutes());
-        String base64EncodedSecretKey = jwtTokenizer.encodedBase64SecretKey(jwtTokenizer.getSecretKey());
+        String base64EncodedSecretKey = jwtTokenizer.encodedBase64SecretKey();
 
         String refreshToken = jwtTokenizer.generateRefreshToken(subject, expiration, base64EncodedSecretKey);
 

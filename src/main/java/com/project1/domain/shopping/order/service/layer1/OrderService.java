@@ -34,7 +34,7 @@ public class OrderService{
     private final ItemCrudService itemCrudService;
     private final DeliveryInfoService deliveryInfoService;
 
-    public OrderService(OrderCrudService crudService, MemberVerificationService memberVerificationService, CartCrudService cartCrudService, ItemCrudService itemCrudService, DeliveryInfoService deliveryInfoService) {
+    public OrderService(OrderCrudService crudService, MemberVerificationService memberVerificationService,  CartCrudService cartCrudService, ItemCrudService itemCrudService, DeliveryInfoService deliveryInfoService) {
         this.crudService = crudService;
         this.memberVerificationService = memberVerificationService;
         this.cartCrudService = cartCrudService;
@@ -44,7 +44,7 @@ public class OrderService{
     @Transactional
     public OrderDto.ResponseDto createOrder(OrderDto.PostDto postDto)   {
         Member member = memberVerificationService.findTokenMember();
-        DeliveryInfo info = deliveryInfoService.create(postDto,member );
+        DeliveryInfo info = deliveryInfoService.create(postDto,member);
         List<Item> itemList = getItemList(postDto);
         Cart cart = verifyMemberAndCart();
 
@@ -60,13 +60,12 @@ public class OrderService{
 
               /*
             PayInfo payInfo = orderPostDto.getPayInfo();
-            todo: 결제 진행
          */
 
         deleteItemInCart(order,cart);
         return crudService.entityToResponse(order);
-    }
 
+    }
     public OrderDto.ResponseDto updateStatus(long orderNumber, Order.Status status) {
         Order order = crudService.find(orderNumber);
         order.setStatus(status);
@@ -87,18 +86,8 @@ public class OrderService{
 
         return crudService.entityToResponse(order);
     }
-
-    private void recoveryStocks(Order order) {
-        for(OrderItem orderItem : order.getOrderItemList()){
-            Item item = orderItem.getItem();
-            item.setStock(item.getStock()+orderItem.getCount());
-            itemCrudService.save(item);
-        }
-    }
-
     public Page<OrderDto.ResponseDto> findMyOrders(int page, int size) {
-        Member member = memberVerificationService.findTokenMember();
-        return crudService.findByName(member.getName(),page,size);
+        return crudService.findByName(memberVerificationService.findTokenMember(),page,size);
     }
     public OrderDto.ResponseDto findOrderDetails(long orderNumber) {
         Order order = crudService.find(orderNumber);
@@ -135,15 +124,19 @@ public class OrderService{
         cartItems.removeAll(itemsToRemove);
         order.setCart(cart);
     }
+    private void recoveryStocks(Order order) {
+        for(OrderItem orderItem : order.getOrderItemList()){
+            Item item = orderItem.getItem();
+            item.setStock(item.getStock()+orderItem.getCount());
+            itemCrudService.save(item);
+        }
+    }
     private Cart verifyMemberAndCart() {
         Member member = memberVerificationService.findTokenMember();
         Cart cart = cartCrudService.findCartByMember(member);
 
-        if (cart.getMember().equals(member)) {
-            return cart;
-        } else {
-            throw new BusinessLogicException(ExceptionCode.CART_NOT_FOUND);
-        }
+        if (cart.getMember().equals(member)) return cart;
+        else  throw new BusinessLogicException(ExceptionCode.CART_NOT_FOUND);
     }
     @NotNull
     private List<Item> getItemList(OrderDto.PostDto postDto) {
@@ -153,4 +146,6 @@ public class OrderService{
         }
         return itemList;
     }
+
+
 }

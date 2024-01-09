@@ -23,24 +23,15 @@ public class MemberEnDecodeService {
         return  new MemberResponseDto(
                 member.getEmail(),
                 member.getName(),
-                jwtTokenizer.dataEnDecrypt(getSecretKey(member),member.getPhone(),2),
-                jwtTokenizer.dataEnDecrypt(getSecretKey(member),member.getAddress(),2)
+                jwtTokenizer.dataEnDecrypt(member.getPhone(),2),
+                jwtTokenizer.dataEnDecrypt(member.getAddress(),2)
         );
     }
 
-    public String getAddress(Member member) {
-        return jwtTokenizer.dataEnDecrypt(getSecretKey(member), member.getAddress(),2);
-    }
-    public String getPhone(Member member) {
-        return jwtTokenizer.dataEnDecrypt(getSecretKey(member), member.getPhone(),2);
-    }
-    private String getSecretKey(Member member) {
-        return jwtTokenizer.encodedBase64SecretKey(member.getEmail());
-    }
     public void encodePrivate(Member member) {
         String encryptedPassword = passwordEncoder.encode(member.getPassword());
-        String encryptedPhone = jwtTokenizer.dataEnDecrypt(getSecretKey(member),member.getPhone(),1);
-        String encryptedAddress = jwtTokenizer.dataEnDecrypt(getSecretKey(member),member.getAddress(),1);
+        String encryptedPhone = jwtTokenizer.dataEnDecrypt(member.getPhone(),1);
+        String encryptedAddress = jwtTokenizer.dataEnDecrypt(member.getAddress(),1);
 
         member.setPassword(encryptedPassword);
         member.setPhone(encryptedPhone);

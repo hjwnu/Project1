@@ -39,6 +39,7 @@ public interface MemberService {
             verificationService.verifyExistsEmail(memberPostDto.getEmail());
 
             Member created = profileService.createRole(memberPostDto);
+            enDecodeService.encodePrivate(created);
             return enDecodeService.memberToMemberResponse(created);
         }
 
@@ -68,7 +69,7 @@ public interface MemberService {
             profileService.deleteMember(member);
         }
         public MemberResponseDto getProfile() {
-            return enDecodeService.memberToMemberResponse(verificationService.findMemberByName(verificationService.findTokenMember().getName()));
+            return enDecodeService.memberToMemberResponse(verificationService.findTokenMember());
         }
 
         @Override

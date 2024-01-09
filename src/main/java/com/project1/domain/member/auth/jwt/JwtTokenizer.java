@@ -40,41 +40,36 @@ public class JwtTokenizer {
 
     private final String SECRET_KEY = System.getenv("SECRET_KEY");
 
-    public String getSecretKey(){
-        return SECRET_KEY;
+    public String encodedBase64SecretKey() {
+        return Encoders.BASE64.encode(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
     }
-    public String encodedBase64SecretKey(String secretKey) {
-        return Encoders.BASE64.encode(secretKey.getBytes(StandardCharsets.UTF_8));
-    }
-    public String base64Encoder(String value) {
-        byte[] byteKey = value.getBytes();
-        return Base64.getEncoder().encodeToString(byteKey);
-    }
-    public String dataEnDecrypt(String cipherKey, String data, int cipherMode) {
+    public String dataEnDecrypt(String data, int cipherMode) {
         String result = null;
         try {
             Cipher cipher = Cipher.getInstance("AES");
             byte[] initailizationVector = new byte[16];
             int index = 0;
-            for (byte b : cipherKey.getBytes(StandardCharsets.UTF_8)) {
+            for (byte b : SECRET_KEY.getBytes(StandardCharsets.UTF_8)) {
                 initailizationVector[index++ % 16] ^= b;
             }
             SecretKeySpec keySpec = new SecretKeySpec(initailizationVector, "AES");
             cipher.init(cipherMode,keySpec);
 
-            if (cipherMode == Cipher.DECRYPT_MODE) {
-                result = new String(cipher.doFinal(Hex.decodeHex(data)), StandardCharsets.UTF_8);
-            } else if (cipherMode == Cipher.ENCRYPT_MODE) {
-                result = new String(Hex.encodeHex(cipher.doFinal(data.getBytes(StandardCharsets.UTF_8)))).toUpperCase(Locale.ROOT);
+            if (cipherMode == Cipher.ENCRYPT_MODE) {
+                byte[] encryptedValue = cipher.doFinal(data.getBytes(StandardCharsets.UTF_8));
+                result = Hex.encodeHexString(encryptedValue);
+            } else if (cipherMode == Cipher.DECRYPT_MODE) {
+                byte[] decryptedValue = Hex.decodeHex(data);
+                result = new String(cipher.doFinal(decryptedValue), StandardCharsets.UTF_8);
             } else {
-                throw new PropertyValueException("cipherMode parameter is invalid", "DataEnDecryption.dataEnDecrypt(int cipherMode", Integer.toString(cipherMode));
+                throw new PropertyValueException("cipherMode parameter is invalid", "DataEnDecryption.dataEnDecrypt(int cipherMode)", Integer.toString(cipherMode));
             }
         } catch (NoSuchPaddingException |
                  NoSuchAlgorithmException |
                  InvalidKeyException |
-                 DecoderException |
-                IllegalBlockSizeException |
-                BadPaddingException e) {
+                 IllegalBlockSizeException |
+                 BadPaddingException |
+                 DecoderException e) {
             throw new RuntimeException(e);
         }
         return result;
@@ -139,7 +134,6 @@ public class JwtTokenizer {
                 .parseClaimsJws(jws);
     }
 
-    //secret Key 생성
     private Key getKeyFromBase64SecretKey(String base64EncodedSecretKey) {
         byte[] keyBytes = Decoders.BASE64.decode(base64EncodedSecretKey);
         // Ensure the key size is at least 256 bits (32 bytes)
@@ -152,5 +146,4 @@ public class JwtTokenizer {
         return key;
 
     }
-
 }
