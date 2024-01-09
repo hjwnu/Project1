@@ -40,20 +40,27 @@ jobs:
           aws ssm send-command \
             --instance-ids i-09cfd0a31e1d528dc \
             --document-name "AWS-RunShellScript" \
-            --parameters 'commands=[
+            --parameters commands='[
               "if sudo docker ps -a --format \\"{{.Names}}\\" | grep -q \\"^server$\\"; then",
               "  sudo docker stop server",
               "  sudo docker rm server",
               "fi",
               "sudo docker pull jwhong123123/project1:${GITHUB_SHA::7}",
               "sudo docker tag jwhong123123/project1:${GITHUB_SHA::7} jw",
-              "sudo docker run -d -e S3_ACCESS_KEY=$S3_ACCESS_KEY -e S3_SECRET_KEY=$S3_SECRET_KEY -e mysql_url=$MYSQL_URL -e mysql_password=$MYSQL_PASSWORD -e mysql_master=$MYSQL_MASTER -e SECRET_KEY=$SECRET_KEY --name server -p 8080:8080 jw"
+              "sudo docker run -d \\",
+              "-e S3_ACCESS_KEY=$S3_ACCESS_KEY \\",
+              "-e S3_SECRET_KEY=$S3_SECRET_KEY \\",
+              "-e MYSQL_URL=$MYSQL_URL \\",
+              "-e MYSQL_PASSWORD=$MYSQL_PASSWORD \\",
+              "-e MYSQL_MASTER=$MYSQL_MASTER \\",
+              "-e SECRET_KEY=$SECRET_KEY \\",
+              "--name server -p 8080:8080 jw"
             ]' \
             --output text
         env:
           S3_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
           S3_SECRET_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          MYSQL_URL: ${{ secrets.MYSQL_URL }}
+          MYSQL_URL: ${{ secrets.mysql_url }}
           MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
           MYSQL_MASTER: ${{ secrets.MYSQL_MASTER }}
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
