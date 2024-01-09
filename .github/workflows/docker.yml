@@ -24,7 +24,7 @@ jobs:
       - name: Docker build
         run: |
           docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_PASSWORD }}
-          docker build -t project1. 
+          docker build -t project1 . 
           docker tag project1 jwhong123123/project1:${GITHUB_SHA::7}
           docker push jwhong123123/project1:${GITHUB_SHA::7}
       - name: Configure AWS credentials
@@ -49,8 +49,9 @@ jobs:
               '  sudo docker stop server',
               '  sudo docker rm server',
               'fi',
-              'sudo docker pull jwhong123123/project1:${GITHUB_SHA::7}
-              'sudo docker tag jwhong123123/project1:${GITHUB_SHA::7}  jw',
+              'sudo docker pull jwhong123123/project1:${GITHUB_SHA::7}',
+              'sudo docker tag jwhong123123/project1:${GITHUB_SHA::7} jw',
               'sudo docker run -d --name server -p 8080:8080 jw'
             ]" \
             --output text
+     
