@@ -49,8 +49,8 @@ jobs:
           '  sudo docker stop server',
           '  sudo docker rm server',
           'fi',
-          'sudo docker pull ***/project1:${GITHUB_SHA::7}',
-          'sudo docker tag ***/project1:${GITHUB_SHA::7} jw',
+          'sudo docker pull jwhong123123/project1:${GITHUB_SHA::7}',
+          'sudo docker tag jwhong123123/project1:${GITHUB_SHA::7} jw',
           'sudo docker run -d --name server -p 8080:8080 jw'
           ]" \
           --output text
