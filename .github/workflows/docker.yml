@@ -42,15 +42,15 @@ jobs:
           AWS_REGION: ap-northeast-2
         run: |
           aws ssm send-command \
-          --instance-ids i-09cfd0a31e1d528dc \
-          --document-name "AWS-RunShellScript" \
-          --parameters "commands=[
-          'if sudo docker ps -a --format \\'{{.Names}}\\' | grep -q \'^server$\\'; then',
-          '  sudo docker stop server',
-          '  sudo docker rm server',
-          'fi',
-          'sudo docker pull jwhong123123/project1:${GITHUB_SHA::7}',
-          'sudo docker tag jwhong123123/project1:${GITHUB_SHA::7} jw',
-          'sudo docker run -d --name server -p 8080:8080 jw'
-          ]" \
-          --output text
+            --instance-ids i-09cfd0a31e1d528dc \
+            --document-name "AWS-RunShellScript" \
+            --parameters "commands=[
+              'if sudo docker ps -a --format \\'{{.Names}}\\' | grep -q \'^server$\\'; then',
+              '  sudo docker stop server',
+              '  sudo docker rm server',
+              'fi',
+              'sudo docker pull jwhong123123/project1:${GITHUB_SHA::7}',
+              'sudo docker tag jwhong123123/project1:${GITHUB_SHA::7} jw',
+              'sudo docker run -d --name server -p 8080:8080 jw'
+            ]" \
+            --output text
