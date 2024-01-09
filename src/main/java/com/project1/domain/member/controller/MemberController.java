@@ -77,22 +77,18 @@ public class MemberController {
         return ResponseEntity.ok(responseDto);
     }
 
-    //작성한 게시물 조회
     @GetMapping("/myReview")
     public ResponseEntity<MultiResponseDto<ReviewDto.ReviewResponseDto>> getMyReviews(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "5") int size) {
         Page<?> myReviews = getMineService.getMine(page, size, Review.class);
         MultiResponseDto<ReviewDto.ReviewResponseDto> response = (MultiResponseDto<ReviewDto.ReviewResponseDto>) new MultiResponseDto<>(myReviews, HttpStatus.OK);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-
-    //작성한 댓글 조회
     @GetMapping("/myComment")
     public ResponseEntity<MultiResponseDto<CommentDto.ResponseDto>> getMyComments(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "5") int size) {
         Page<?> myComments = getMineService.getMine(page,size, Comment.class);
         MultiResponseDto<CommentDto.ResponseDto> response = (MultiResponseDto<CommentDto.ResponseDto>) new MultiResponseDto<>(myComments, HttpStatus.OK);
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
-    //작성한  문의 조회
     @GetMapping("/myComplain")
     public ResponseEntity<MultiResponseDto<ComplainDto.ComplainResponsesDto>> getMyComplains(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "5") int size) {
         Page<?> myComplains = getMineService.getMine(page,size, Complain.class);
