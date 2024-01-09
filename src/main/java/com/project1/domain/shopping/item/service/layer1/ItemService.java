@@ -50,11 +50,8 @@ public class ItemService {
     @Transactional
     public ItemDto.Response createItem(ItemDto.Post requestBody, List<MultipartFile> itemImgFileList) throws IOException {
         verifySameItemNameExist(requestBody.getName());
-
-        Item item = crudService.create(requestBody);   // 상품 저장 후, 상품에 매핑된 이미지 저장하는 순서.
-
+        Item item = crudService.create(requestBody);   // After save Item, save Item Image mapped by item.
         createItemImage(itemImgFileList, item);
-
         return crudService.entityToResponse(item);
     }
     @Transactional
