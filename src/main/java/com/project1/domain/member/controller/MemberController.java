@@ -76,7 +76,6 @@ public class MemberController {
         SingleResponseDto<MemberResponseDto> responseDto = new SingleResponseDto<>(response,HttpStatus.OK);
         return ResponseEntity.ok(responseDto);
     }
-
     @GetMapping("/myReview")
     public ResponseEntity<MultiResponseDto<ReviewDto.ReviewResponseDto>> getMyReviews(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "5") int size) {
         Page<?> myReviews = getMineService.getMine(page, size, Review.class);
