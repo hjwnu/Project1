@@ -1,11 +1,9 @@
 name: Java CI with Gradle
 
 on:
-  pull_request:
+  push:
     branches:
       - main
-    types:
-      - auto_merge_enabled
 
 jobs:
   build:
@@ -26,6 +24,33 @@ jobs:
       - name: Docker build
         run: |
           docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_PASSWORD }}
-          docker build -t main28 . 
-          docker tag main28 jwhong123123/main_project:${GITHUB_SHA::7}
-          docker push jwhong123123/main_project:${GITHUB_SHA::7}
+          docker build -t project1. 
+          docker tag project1 jwhong123123/project1:${GITHUB_SHA::7}
+          docker push jwhong123123/project1:${GITHUB_SHA::7}
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.S3_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.S3_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
+      - name: Start Session Manager session
+        run: aws ssm start-session --target i-09cfd0a31e1d528dc
+      - name: Deploy to Server
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.S3_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_ACCESS_KEY }}
+          AWS_REGION: ap-northeast-2
+        run: |
+          aws ssm send-command \
+            --instance-ids i-09cfd0a31e1d528dc 
+            --document-name "AWS-RunShellScript" \
+            --parameters "commands=[
+              'if sudo docker ps -a --format \\'{{.Names}}\\' | grep -q \'^server$\\'; then',
+              '  sudo docker stop server',
+              '  sudo docker rm server',
+              'fi',
+              'sudo docker pull jwhong123123/project1:${GITHUB_SHA::7}
+              'sudo docker tag jwhong123123/project1:${GITHUB_SHA::7}  jw',
+              'sudo docker run -d --name server -p 8080:8080 jw'
+            ]" \
+            --output text
