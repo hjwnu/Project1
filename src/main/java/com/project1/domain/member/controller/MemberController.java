@@ -71,7 +71,7 @@ public class MemberController {
         return ResponseEntity.ok(responseDto);
     }
     @PostMapping("/search")
-    public ResponseEntity<SingleResponseDto<MemberResponseDto>> getMember(@RequestParam String name) {
+    public ResponseEntity<SingleResponseDto<MemberResponseDto>> getMember(@RequestParam("name") String name) {
         MemberResponseDto response = memberService.getOtherProfile(name);
         SingleResponseDto<MemberResponseDto> responseDto = new SingleResponseDto<>(response,HttpStatus.OK);
         return ResponseEntity.ok(responseDto);

@@ -74,10 +74,23 @@ public interface MemberService {
 
         @Override
         public MemberResponseDto getOtherProfile(String name) {
-            MemberResponseDto responseDto = enDecodeService.memberToMemberResponse(verificationService.findMemberByName(name));
-            responseDto.setAddress("*********");
-            responseDto.setPhone("*********");
+            MemberResponseDto responseDto = enDecodeService.memberToMemberResponse(profileService.findMemberByName(name));
+            
+            if(verificationService.isAdmin()
+                || verificationService.findTokenMember().getName().equals(name)) return responseDto;
+            
+            responseDto.setName(responseDto.getName().charAt(0) + "**");
+            responseDto.setEmail(maskingEmail(responseDto.getEmail()));
+            responseDto.setAddress("*".repeat(10));
+            responseDto.setPhone("010-****-****");
             return responseDto;
+        }
+
+        private String maskingEmail(String email) {
+            int atMarkIndex = email.indexOf('@');
+            int maskingNumber = email.substring(0, atMarkIndex).length();
+            String emailDomain = email.substring(atMarkIndex);
+           return "*".repeat(maskingNumber)+emailDomain;
         }
     }
 }

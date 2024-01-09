@@ -6,6 +6,8 @@ import com.project1.domain.member.dto.MemberPostDto;
 import com.project1.domain.member.entity.Member;
 import com.project1.domain.member.mapper.MemberMapper;
 import com.project1.domain.member.repository.MemberRepository;
+import com.project1.global.exception.BusinessLogicException;
+import com.project1.global.exception.ExceptionCode;
 import com.project1.global.utils.CustomBeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,7 +52,9 @@ import org.springframework.transaction.annotation.Transactional;
         return memberRepository.save(updatedMember);
     }
 
-
+    public Member findMemberByName(String name) {
+        return memberRepository.findMemberByName(name).orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
+    }
     public void deleteMember(Member member) {
         memberRepository.delete(member);
     }

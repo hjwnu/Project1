@@ -47,9 +47,8 @@ public class MemberVerificationService {
             throw new BusinessLogicException(ExceptionCode.USER_EXIST);
         }
     }
-
-    public Member findMemberByName(String name) {
-        return memberRepository.findMemberByName(name).orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
+    public boolean isAdmin() {
+        return findTokenMember().getRoles().contains("ADMIN");
     }
 
 }
