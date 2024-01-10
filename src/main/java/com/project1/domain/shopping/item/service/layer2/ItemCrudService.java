@@ -61,10 +61,6 @@ public class ItemCrudService
 
         List<Item> list = repository.searchByCondition(itemSearchCondition
                 , PageRequest.of(page - 1, 9));
-        for (Item item : list) {
-            item.setScore(item.getScore());
-            item.setReviewCount(item.getReviews().size());
-        }
         return listToDtoList(list);
     }
 
