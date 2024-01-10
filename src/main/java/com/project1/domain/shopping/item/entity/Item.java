@@ -2,8 +2,6 @@ package com.project1.domain.shopping.item.entity;
 
 import com.project1.domain.shopping.review.entity.Review;
 import com.project1.global.generic.Auditable;
-import com.project1.global.exception.BusinessLogicException;
-import com.project1.global.exception.ExceptionCode;
 import lombok.*;
 
 import javax.persistence.*;
@@ -55,15 +53,6 @@ public class Item extends Auditable {
         this.Images.add(i);
     }
 
-
-
-    public void setRepresentationImage() {
-        ItemImage repImg = this.Images.get(0);
-        if(repImg.getRepresentationImage()==null||!repImg.getRepresentationImage().equals("YES")) {
-            repImg.setRepresentationImage("YES");
-            this.Images.set(0, repImg);
-        }
-    }
     public Double getScore(){
         if (this.reviews == null) {
             this.score = this.score==null ? 0.0:this.score;

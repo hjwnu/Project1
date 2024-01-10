@@ -4,6 +4,7 @@ import lombok.Getter;
 
 public enum ExceptionCode {
     ONLY_ADMIN_CAN(401, "관리자 권한이 필요합니다."),
+    INVALID_SCORE(500, "평점 범위를 벗어났습니다"),
     NOT_FOUND(404, "not found" ),
     MEMBER_NOT_FOUND(404, "Member not found"),
     MEMBER_EXISTS(409, "Member exists"),

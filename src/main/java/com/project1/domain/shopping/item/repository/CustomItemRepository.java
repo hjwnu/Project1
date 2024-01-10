@@ -39,19 +39,19 @@ public interface CustomItemRepository {
             return queryFactory
                     .select(Projections.fields(Item.class,
                             item.itemId, item.name, item.price, item.detail, item.stock,
-                            item.color, item.brand, item.category,
-                            Expressions.as(
-                                    JPAExpressions.select(review.count().intValue())
-                                            .from(review)
-                                            .where(review.item.eq(item)),
-                                    "reviewCount"
-                            ),
-                            Expressions.as(
-                                    JPAExpressions.select(review.score.avg())
-                                            .from(review)
-                                            .where(review.item.eq(item)),
-                                    "score"
-                            )
+                            item.color, item.brand, item.category
+//                            Expressions.as(
+//                                    JPAExpressions.select(review.count().intValue())
+//                                            .from(review)
+//                                            .where(review.item.eq(item)),
+//                                    "reviewCount"
+//                            ),
+//                            Expressions.as(
+//                                    JPAExpressions.select(review.score.avg())
+//                                            .from(review)
+//                                            .where(review.item.eq(item)),
+//                                    "score"
+//                            )
                     ))
                     .from(item)
                     .leftJoin(item.reviews, review)

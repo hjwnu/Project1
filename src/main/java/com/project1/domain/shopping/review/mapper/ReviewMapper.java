@@ -21,8 +21,8 @@ public interface ReviewMapper  extends GenericMapper<Review, ReviewDto.ReviewPos
                 .itemName(entity.getItem().getName())
                 .memberName(entity.getMember().getName())
                 .content(entity.getContent())
-                .score(entity.getScore()) //상품별점추가
-                .modifiedAt(entity.getModifiedAt())//수정일 추가
+                .score(entity.getScore())
+                .modifiedAt(entity.getModifiedAt())
                 .createdAt(entity.getCreatedAt())
                 .likeCount(entity.getLikeCount()==null?0: entity.getLikeCount())
                 .unlikeCount(entity.getUnlikeCount()==null?0: entity.getUnlikeCount())

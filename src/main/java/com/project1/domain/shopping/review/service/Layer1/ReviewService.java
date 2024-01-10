@@ -36,6 +36,7 @@ public class ReviewService {
     }
 
     public ReviewDto.ReviewResponseDto createReview(List<MultipartFile> reviewImgFileList, ReviewDto.ReviewPostDto postDto) throws IOException {
+        if(postDto.getScore() > 5 || postDto.getScore() < 0 ) throw new BusinessLogicException(ExceptionCode.INVALID_SCORE);
         Item item = itemService.findEntity(postDto.getItemId());
         Member member = memberVerificationService.findTokenMember();
         Review review = crudService.create(postDto,item,member);
