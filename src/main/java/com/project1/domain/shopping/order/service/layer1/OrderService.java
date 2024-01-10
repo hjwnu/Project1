@@ -47,19 +47,24 @@ public class OrderService{
     @Transactional
     public OrderDto.ResponseDto createOrder(OrderDto.PostDto postDto)   {
         Member member = memberVerificationService.findTokenMember();
-        Cart cart = verifyMemberAndCart();
+        Cart cart = verifyMemberAndCart(member);
         DeliveryInfo info = deliveryInfoService.create(postDto,member);
         List<Item> itemList = getItemList(postDto);
 
         List<OrderItem> list = orderItemService.orderItemDtoToEntityList(postDto, itemList);
         Order order = crudService.create(cart,member, info,list);
         orderItemService.saveAll(order);
-        /*fixme:
-            The entire ordering process works in this method. This makes it difficult to change the appropriate order status.
+        /*
+        fixme:
+            1. The entire ordering process works in this method. This makes it difficult to change the appropriate order status.
             Also, If an exception occurs in the middle stage, it is difficult to catch.
             For various reasons, including the SRP, this method must be separated.
             ex: order_placed, payment_wait, payment_complete,  delivery_preparing ...
+            2. There are too much queries.
+            Maybe It is related reason  as above case.
+            This method must be sepreated. And consider optimizing query and using batch.
          */
+
         checkStock(order);
 
               /*
@@ -135,8 +140,7 @@ public class OrderService{
             itemCrudService.save(item);
         }
     }
-    private Cart verifyMemberAndCart() {
-        Member member = memberVerificationService.findTokenMember();
+    private Cart verifyMemberAndCart(Member member) {
         Cart cart = cartCrudService.findCartByMember(member);
 
         if (cart.getMember().equals(member)) return cart;
