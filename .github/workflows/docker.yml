@@ -24,7 +24,7 @@ jobs:
       - name: Docker build
         run: |
           docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_PASSWORD }}
-          docker build -t project1 . 
+          docker build -t docker build --build-arg MYSQL_URL=${{ secrets.mysql_url }} --build-arg MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }} --build-arg MYSQL_USER=${{ secrets.mysql_user }} -t project1 .
           docker tag project1 jwhong123123/project1:${GITHUB_SHA::7}
           docker push jwhong123123/project1:${GITHUB_SHA::7}
       - name: Configure AWS credentials
@@ -41,20 +41,13 @@ jobs:
             --instance-ids i-09cfd0a31e1d528dc \
             --document-name "AWS-RunShellScript" \
             --parameters "commands=[
-              'if sudo docker ps -a --format \\'{{.Names}}\\' | grep -q \'^server$\\'; then',
+              'if sudo docker ps -a --format '{{.Names}}' | grep -q '^server$'; then',
               '  sudo docker stop server',
               '  sudo docker rm server',
               'fi',
               'sudo docker pull jwhong123123/project1:${GITHUB_SHA::7}',
               'sudo docker tag jwhong123123/project1:${GITHUB_SHA::7} jw',
-              'sudo docker run -d ',
-              ' -e S3_ACCESS_KEY=$S3_ACCESS_KEY',
-              ' -e S3_SECRET_KEY=$S3_SECRET_KEY',
-              ' -e MYSQL_URL=$MYSQL_URL \\',
-              ' -e MYSQL_PASSWORD=$MYSQL_PASSWORD',
-              ' -e MYSQL_MASTER=$MYSQL_MASTER',
-              ' -e SECRET_KEY=$SECRET_KEY',
-              '--name server -p 8080:8080 jw'
+              'sudo docker run -d -e S3_ACCESS_KEY=$S3_ACCESS_KEY -e S3_SECRET_KEY=$S3_SECRET_KEY -e MYSQL_URL=$MYSQL_URL -e MYSQL_PASSWORD=$MYSQL_PASSWORD -e MYSQL_MASTER=$MYSQL_MASTER -e SECRET_KEY=$SECRET_KEY --name server -p 8080:8080 jw'
             ]" \
             --output text
         env:
