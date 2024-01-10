@@ -24,7 +24,7 @@ jobs:
       - name: Docker build
         run: |
           docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_PASSWORD }}
-          docker build -t docker build --build-arg MYSQL_URL=${{ secrets.mysql_url }} --build-arg MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }} --build-arg MYSQL_USER=${{ secrets.mysql_user }} -t project1 .
+          docker build --build-arg MYSQL_URL=${{ secrets.MYSQL_URL }} --build-arg MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }} --build-arg MYSQL_MASTER=${{ secrets.MYSQL_MATSER }} -t project1 .
           docker tag project1 jwhong123123/project1:${GITHUB_SHA::7}
           docker push jwhong123123/project1:${GITHUB_SHA::7}
       - name: Configure AWS credentials
