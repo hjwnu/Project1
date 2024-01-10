@@ -38,7 +38,8 @@ public interface CustomItemRepository {
 
             return queryFactory
                     .select(Projections.fields(Item.class,
-                            item.itemId, item.name, item.price, item.detail, item.stock,
+                            item.itemId
+                            , item.name, item.price, item.detail, item.stock,
                             item.color, item.brand, item.category
 //                            Expressions.as(
 //                                    JPAExpressions.select(review.count().intValue())
