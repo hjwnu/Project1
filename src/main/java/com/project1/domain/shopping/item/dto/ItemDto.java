@@ -1,10 +1,7 @@
 package com.project1.domain.shopping.item.dto;
 
 import com.project1.domain.shopping.review.dto.ReviewDto;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.annotation.Nullable;
 import javax.validation.constraints.Min;
@@ -60,8 +57,27 @@ public class ItemDto {
 
     @Getter
     @AllArgsConstructor
-    public static class Response {
-        private OnlyItemResponseDto item;
+    public static class ResponseWithReview {
+        private ResponseDtoWithoutReview item;
         private List<ReviewDto.ReviewResponseDto> reviews;
+    }
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Setter
+    @Getter
+    @Builder
+    public static class ResponseDtoWithoutReview {
+        private Long itemId;
+        private String name;
+        private Long price;
+        private String detail;
+        private String stocks;
+        private String color;
+        private Double score;
+        private String brand;
+        private String category;
+        private Integer reviewCount;
+        private List<ItemImageDto> imageURLs;
     }
 }

@@ -2,7 +2,6 @@ package com.project1.domain.shopping.item.service.layer2;
 
 import com.project1.domain.shopping.item.dto.ItemDto;
 import com.project1.domain.shopping.item.dto.ItemSearchCondition;
-import com.project1.domain.shopping.item.dto.OnlyItemResponseDto;
 import com.project1.domain.shopping.item.entity.Item;
 import com.project1.domain.shopping.item.mapper.ItemMapper;
 import com.project1.domain.shopping.item.repository.ItemRepository;
@@ -22,7 +21,7 @@ import java.util.List;
 
 @Service
 public class ItemCrudService
-    extends GenericCrudService.GenericCrud<Item, ItemDto.Post, ItemDto.Response, ItemDto.Patch, Long> {
+    extends GenericCrudService.GenericCrud<Item, ItemDto.Post, ItemDto.ResponseWithReview, ItemDto.Patch, Long> {
     private final ItemMapper mapper;
     private final ItemRepository repository;
     private final ReviewMapper reviewMapper;
@@ -44,7 +43,7 @@ public class ItemCrudService
     }
 
     @Override
-    protected GenericMapper<Item, ItemDto.Post, ItemDto.Response, ItemDto.Patch, Long> getMapper() {
+    protected GenericMapper<Item, ItemDto.Post, ItemDto.ResponseWithReview, ItemDto.Patch, Long> getMapper() {
         return mapper;
     }
 
@@ -57,17 +56,17 @@ public class ItemCrudService
         return repository.findItemByName(name);
     }
 
-    public List<OnlyItemResponseDto> conditionSearch(int page, List<ItemSearchCondition> itemSearchCondition) {
+    public List<ItemDto.ResponseDtoWithoutReview> conditionSearch(int page, List<ItemSearchCondition> itemSearchCondition) {
 
         List<Item> list = repository.searchByCondition(itemSearchCondition
                 , PageRequest.of(page - 1, 9));
         return listToDtoList(list);
     }
 
-    public ItemDto.Response entityToResponse(Item entity){
-        OnlyItemResponseDto onlyitemResponseDto = mapper.itemToOnlyItemResponseDto(entity);
+    public ItemDto.ResponseWithReview entityToResponse(Item entity){
+        ItemDto.ResponseDtoWithoutReview onlyitemResponseDtoWithoutReview = mapper.itemToItemResponseDto(entity, false);
         List<ReviewDto.ReviewResponseDto> reviewResponseList = getReviewsResponseDto(entity);
-        return new ItemDto.Response(onlyitemResponseDto, reviewResponseList);
+        return new ItemDto.ResponseWithReview(onlyitemResponseDtoWithoutReview, reviewResponseList);
     }
     public void removeStocks(Item item,Long count) {
         long stock = item.getStock() - count;
@@ -87,7 +86,7 @@ public class ItemCrudService
         }
         return reviewResponseDtoList;
     }
-    private List<OnlyItemResponseDto> listToDtoList(List<Item> itemList){
-        return mapper.itemListToOnlyItemResponseDtoList(itemList);
+    private List<ItemDto.ResponseDtoWithoutReview> listToDtoList(List<Item> itemList){
+        return mapper.itemListToItemResponseDtoListWithoutReview(itemList, true);
     }
 }

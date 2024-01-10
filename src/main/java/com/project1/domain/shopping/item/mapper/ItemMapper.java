@@ -2,62 +2,58 @@ package com.project1.domain.shopping.item.mapper;
 
 import com.project1.global.generic.GenericMapper;
 import com.project1.domain.shopping.item.dto.ItemDto;
-import com.project1.domain.shopping.item.dto.ItemImageResponseDto;
-import com.project1.domain.shopping.item.dto.OnlyItemResponseDto;
+import com.project1.domain.shopping.item.dto.ItemImageDto;
 import com.project1.domain.shopping.item.entity.Item;
 import com.project1.domain.shopping.item.entity.ItemImage;
 import org.mapstruct.Mapper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 @Mapper(componentModel =  "spring")
 public interface ItemMapper
-        extends GenericMapper<Item, ItemDto.Post, ItemDto.Response, ItemDto.Patch, Long> {
-    default OnlyItemResponseDto itemToOnlyItemResponseDto(Item item) {
+        extends GenericMapper<Item, ItemDto.Post, ItemDto.ResponseWithReview, ItemDto.Patch, Long> {
+    default ItemDto.ResponseDtoWithoutReview itemToItemResponseDto(Item item, boolean isList) {
         if ( item == null ) {
             return null;
         }
 
-        OnlyItemResponseDto.OnlyItemResponseDtoBuilder onlyItemResponseDto =
-                OnlyItemResponseDto.builder()
+        return ItemDto.ResponseDtoWithoutReview.builder()
                     .itemId( item.getItemId() )
                     .name( item.getName() )
                     .price( item.getPrice() )
                     .detail( item.getDetail() )
                     .color( item.getColor() )
-                    .score( item.getScore() )
+                    .score(  isList ? item.getScore() : item.getCustomScore() )
                     .brand( item.getBrand() )
-                    .stocks(checkStock(item))
+                    .stocks( checkStock(item) )
                     .category( item.getCategory() )
-                    .reviewCount(item.getReviewCount())
-                    .imageURLs(getImageResponseDto(item));
-
-        return onlyItemResponseDto.build();
+                    .reviewCount( isList ? item.getReviewCount() : item.getCustomReviewCount() )
+                    .imageURLs( getImageResponseDto(item) )
+                    .build();
     }
 
-    default List<OnlyItemResponseDto> itemListToOnlyItemResponseDtoList(List<Item> itemList) {
-        List<OnlyItemResponseDto> onlyItemResponsesDto = new ArrayList<>();
-        for (Item item : itemList) {
-            onlyItemResponsesDto.add(itemToOnlyItemResponseDto(item));
-        }
-        return onlyItemResponsesDto;
+
+    default List<ItemDto.ResponseDtoWithoutReview> itemListToItemResponseDtoListWithoutReview(List<Item> itemList, boolean isList) {
+        return itemList.stream().map(item -> itemToItemResponseDto(item,isList)).collect(Collectors.toList());
     }
 
-    default List<ItemImageResponseDto> getImageResponseDto(Item item) {
-        List<ItemImageResponseDto> itemImageResponseDtos = new ArrayList<>();
+    default List<ItemImageDto> getImageResponseDto(Item item) {
+        List<ItemImageDto> itemImageDtos = new ArrayList<>();
         List<ItemImage> imageList = item.getImages();
 
         if (imageList != null) {
             for (ItemImage image : imageList) {
-                ItemImageResponseDto itemImageResponseDto = imageToResponse(image);
-                itemImageResponseDtos.add(itemImageResponseDto);
+                ItemImageDto itemImageDto = imageToResponse(image);
+                itemImageDtos.add(itemImageDto);
             }
         }
-        return itemImageResponseDtos;
+        return itemImageDtos;
     }
 
-    default ItemImageResponseDto imageToResponse(ItemImage image) {
-        return ItemImageResponseDto.builder()
+    default ItemImageDto imageToResponse(ItemImage image) {
+        return ItemImageDto.builder()
                 .imageName(image.getImageName())
                 .URL(image.getBaseUrl() + image.getImageName())
                 .representationImage(image.getRepresentationImage())

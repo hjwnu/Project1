@@ -1,9 +1,8 @@
 package com.project1.domain.shopping.item.mapper;
 
+import com.project1.domain.shopping.item.dto.ItemDto;
 import com.project1.domain.shopping.item.dto.ItemDto.Patch;
 import com.project1.domain.shopping.item.dto.ItemDto.Post;
-import com.project1.domain.shopping.item.dto.ItemDto.Response;
-import com.project1.domain.shopping.item.dto.OnlyItemResponseDto;
 import com.project1.domain.shopping.item.entity.Item;
 import com.project1.domain.shopping.item.entity.Item.ItemBuilder;
 import com.project1.domain.shopping.review.dto.ReviewDto.ReviewResponseDto;
@@ -63,7 +62,7 @@ public class ItemMapperImpl implements ItemMapper {
     }
 
     @Override
-    public Response entityToResponseDto(Item entity) {
+    public ItemDto.ResponseWithReview entityToResponseDto(Item entity) {
         if ( entity == null ) {
             return null;
         }
@@ -72,11 +71,11 @@ public class ItemMapperImpl implements ItemMapper {
 
         reviews = reviewListToReviewResponseDtoList( entity.getReviews() );
 
-        OnlyItemResponseDto item = null;
+        ItemDto.ResponseDtoWithoutReview item = null;
 
-        Response response = new Response( item, reviews );
+        ItemDto.ResponseWithReview responseWithReview = new ItemDto.ResponseWithReview( item, reviews );
 
-        return response;
+        return responseWithReview;
     }
 
     protected ReviewResponseDto reviewToReviewResponseDto(Review review) {

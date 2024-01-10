@@ -53,7 +53,7 @@ public class Item extends Auditable {
         this.Images.add(i);
     }
 
-    public Double getScore(){
+    public Double getCustomScore(){
         if (this.reviews == null) {
             this.score = this.score==null ? 0.0:this.score;
             return this.score;
@@ -69,8 +69,8 @@ public class Item extends Auditable {
         score = (double)Math.round(score*100)/100;
         return score;
     }
-
-    public Integer getReviewCount() {
+//
+    public Integer getCustomReviewCount() {
         if (this.reviews == null) return 0;
         return this.reviews.size();
     }

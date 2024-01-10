@@ -22,11 +22,11 @@ public class AdminService {
         this.itemService = itemService;
     }
 
-    public ItemDto.Response registerItem(ItemDto.Post requestBody, List<MultipartFile> itemImgFileList) throws IOException {
+    public ItemDto.ResponseWithReview registerItem(ItemDto.Post requestBody, List<MultipartFile> itemImgFileList) throws IOException {
         return itemService.createItem(requestBody, itemImgFileList);
     }
 
-    public ItemDto.Response updateItem(ItemDto.Patch requestBody, List<MultipartFile> itemImgFileList) throws IOException {
+    public ItemDto.ResponseWithReview updateItem(ItemDto.Patch requestBody, List<MultipartFile> itemImgFileList) throws IOException {
         return itemService.updateItem(requestBody,itemImgFileList);
     }
 

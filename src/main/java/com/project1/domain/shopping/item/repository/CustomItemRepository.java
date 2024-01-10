@@ -46,13 +46,13 @@ public interface CustomItemRepository {
                                             .from(review)
                                             .where(review.item.eq(item)),
                                     "reviewCount"
+                            ),
+                            Expressions.as(
+                                    JPAExpressions.select(review.score.avg())
+                                            .from(review)
+                                            .where(review.item.eq(item)),
+                                    "score"
                             )
-//                            Expressions.as(
-//                                    JPAExpressions.select(review.score.avg())
-//                                            .from(review)
-//                                            .where(review.item.eq(item)),
-//                                    "score"
-//                            )
                     ))
                     .from(item)
                     .leftJoin(item.reviews, review)

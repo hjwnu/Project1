@@ -7,7 +7,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ItemImageResponseDto {
+public class ItemImageDto {
     String imageName;
     String URL;
     String representationImage;

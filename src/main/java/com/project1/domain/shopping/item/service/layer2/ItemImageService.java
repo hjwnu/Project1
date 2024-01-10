@@ -1,7 +1,7 @@
 package com.project1.domain.shopping.item.service.layer2;
 
 import com.project1.domain.shopping.item.repository.ItemImageRepository;
-import com.project1.domain.shopping.item.dto.ItemImageResponseDto;
+import com.project1.domain.shopping.item.dto.ItemImageDto;
 import com.project1.domain.shopping.item.entity.Item;
 import com.project1.domain.shopping.item.entity.ItemImage;
 import com.project1.domain.shopping.item.mapper.ItemMapper;
@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 @Slf4j
-public class ItemImageService extends GenericImageService.GenericImageServiceImpl<Item, ItemImage, ItemImageResponseDto> {
+public class ItemImageService extends GenericImageService.GenericImageServiceImpl<Item, ItemImage, ItemImageDto> {
     private final ItemMapper mapper;
     private final ItemImageRepository repository;
     private final String PATH = "images/item/";
@@ -49,7 +49,7 @@ public class ItemImageService extends GenericImageService.GenericImageServiceImp
 
 
     @Override
-    public Map<Long, List<ItemImageResponseDto>> fetchImages(List<Long> ids) {
+    public Map<Long, List<ItemImageDto>> fetchImages(List<Long> ids) {
         Map<Long, List<ItemImage>> imageMap = fetch(ids);
         return imageMap.entrySet().stream()
                 .collect(Collectors.toMap(

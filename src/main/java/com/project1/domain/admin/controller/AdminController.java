@@ -26,27 +26,27 @@ public class AdminController {
     }
     @PostMapping(value = "/item/register"
             , consumes = {MediaType.APPLICATION_JSON_VALUE,MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<SingleResponseDto<ItemDto.Response>> createItem(@Valid @RequestPart ItemDto.Post requestBody
+    public ResponseEntity<SingleResponseDto<ItemDto.ResponseWithReview>> createItem(@Valid @RequestPart ItemDto.Post requestBody
             , @Nullable @RequestPart(name = "images") List<MultipartFile> itemImgFileList) throws IOException {
 
-        ItemDto.Response item =  adminService.registerItem(requestBody, itemImgFileList);
+        ItemDto.ResponseWithReview item =  adminService.registerItem(requestBody, itemImgFileList);
 
         HttpStatus created = HttpStatus.CREATED;
 
-        SingleResponseDto<ItemDto.Response> response = new SingleResponseDto<>(item, created);
+        SingleResponseDto<ItemDto.ResponseWithReview> response = new SingleResponseDto<>(item, created);
 
         return new ResponseEntity<>(response, created);
     }
 
     @PatchMapping(value = "/item/update/{item-id}", consumes = {MediaType.APPLICATION_JSON_VALUE,MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<SingleResponseDto<ItemDto.Response>> updateItem(@PathVariable("item-id") @Positive long itemId,
-                                                                          @Valid @RequestPart ItemDto.Patch requestBody, @Nullable @RequestPart(name = "images") List<MultipartFile> itemImgFileList)
+    public ResponseEntity<SingleResponseDto<ItemDto.ResponseWithReview>> updateItem(@PathVariable("item-id") @Positive long itemId,
+                                                                                    @Valid @RequestPart ItemDto.Patch requestBody, @Nullable @RequestPart(name = "images") List<MultipartFile> itemImgFileList)
             throws IOException {
 
         requestBody.setItemId(itemId);
-        ItemDto.Response itemResponse =  adminService.updateItem(requestBody, itemImgFileList);
+        ItemDto.ResponseWithReview itemResponseWithReview =  adminService.updateItem(requestBody, itemImgFileList);
 
-        SingleResponseDto<ItemDto.Response> response = new SingleResponseDto<>(itemResponse, ok);
+        SingleResponseDto<ItemDto.ResponseWithReview> response = new SingleResponseDto<>(itemResponseWithReview, ok);
         return new ResponseEntity<>(response,ok);
     }
 

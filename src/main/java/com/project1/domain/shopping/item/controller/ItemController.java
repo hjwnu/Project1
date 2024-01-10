@@ -5,7 +5,6 @@ import com.project1.global.response.MultiResponseDto;
 import com.project1.global.response.SingleResponseDto;
 import com.project1.domain.shopping.item.dto.ItemDto;
 import com.project1.domain.shopping.item.dto.ItemSearchCondition;
-import com.project1.domain.shopping.item.dto.OnlyItemResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -25,20 +24,20 @@ public class ItemController {
     private final ItemService itemService;
     private final HttpStatus ok = HttpStatus.OK;
     @GetMapping("/{item-id}")
-    public ResponseEntity<SingleResponseDto<ItemDto.Response>> getItem(@PathVariable("item-id") @Positive long itemId){
-        ItemDto.Response item = itemService.findItem(itemId);
-        SingleResponseDto<ItemDto.Response> response = new SingleResponseDto<>(item, ok);
+    public ResponseEntity<SingleResponseDto<ItemDto.ResponseWithReview>> getItem(@PathVariable("item-id") @Positive long itemId){
+        ItemDto.ResponseWithReview item = itemService.findItem(itemId);
+        SingleResponseDto<ItemDto.ResponseWithReview> response = new SingleResponseDto<>(item, ok);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PostMapping( "/search")
-    public ResponseEntity<MultiResponseDto<OnlyItemResponseDto>> getItems(
+    public ResponseEntity<MultiResponseDto<ItemDto.ResponseDtoWithoutReview>> getItems(
             @RequestParam(defaultValue = "1") int page,
             @RequestBody @Valid List<ItemSearchCondition> itemSearchCondition){
 
-        Page<OnlyItemResponseDto> items = itemService.findItems(page, itemSearchCondition);
+        Page<ItemDto.ResponseDtoWithoutReview> items = itemService.findItems(page, itemSearchCondition);
 
-        MultiResponseDto<OnlyItemResponseDto> response = new MultiResponseDto<>(items,ok);
+        MultiResponseDto<ItemDto.ResponseDtoWithoutReview> response = new MultiResponseDto<>(items,ok);
         return new ResponseEntity<>(response, ok);
     }
 
