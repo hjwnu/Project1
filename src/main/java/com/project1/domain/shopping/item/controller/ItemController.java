@@ -33,7 +33,7 @@ public class ItemController {
     @PostMapping( "/search")
     public ResponseEntity<MultiResponseDto<ItemDto.ResponseDtoWithoutReview>> getItems(
             @RequestParam(defaultValue = "1") int page,
-            @RequestBody @Valid List<ItemSearchCondition> itemSearchCondition){
+            @RequestBody @Valid ItemSearchCondition itemSearchCondition){
 
         Page<ItemDto.ResponseDtoWithoutReview> items = itemService.findItems(page, itemSearchCondition);
 

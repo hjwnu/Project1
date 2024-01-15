@@ -56,7 +56,7 @@ public class ItemCrudService
         return repository.findItemByName(name);
     }
 
-    public List<ItemDto.ResponseDtoWithoutReview> conditionSearch(int page, List<ItemSearchCondition> itemSearchCondition) {
+    public List<ItemDto.ResponseDtoWithoutReview> conditionSearch(int page, ItemSearchCondition itemSearchCondition) {
 
         List<Item> list = repository.searchByCondition(itemSearchCondition
                 , PageRequest.of(page - 1, 9));

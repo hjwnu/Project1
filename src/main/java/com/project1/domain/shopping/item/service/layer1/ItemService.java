@@ -38,7 +38,7 @@ public class ItemService {
         return crudService.entityToResponse(item);
     }
     @Transactional
-    public Page<ItemDto.ResponseDtoWithoutReview> findItems(int page, List<ItemSearchCondition> conditions){
+    public Page<ItemDto.ResponseDtoWithoutReview> findItems(int page, ItemSearchCondition conditions){
         PageRequest pageRequest = PageRequest.of(page - 1, 9);
         List<ItemDto.ResponseDtoWithoutReview> result = crudService.conditionSearch(page, conditions);
         setImages(result);

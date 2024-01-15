@@ -24,17 +24,15 @@ import static com.project1.domain.shopping.review.entity.QReview.review;
 
 
 public interface CustomItemRepository {
-    List<Item> searchByCondition(List<ItemSearchCondition> condition, Pageable pageable); // 다중 검색 조건 메서드.  Impl 파일에서 메서드 구현
+    List<Item> searchByCondition(ItemSearchCondition condition, Pageable pageable); // 다중 검색 조건 메서드.  Impl 파일에서 메서드 구현
 
     @RequiredArgsConstructor
     @Slf4j
     class CustomItemRepositoryImpl implements CustomItemRepository{
         private final JPAQueryFactory queryFactory;
 
-        public List<Item> searchByCondition(List<ItemSearchCondition> conditions, Pageable pageable){
-            BooleanExpression combinedCondition = getCombinedCondition(conditions);
+        public List<Item> searchByCondition(ItemSearchCondition condition, Pageable pageable){
 
-            List<OrderSpecifier<?>> orderSpecifiers = sortConditions(conditions);
 
             return queryFactory
                     .select(Projections.fields(Item.class,
@@ -56,23 +54,14 @@ public interface CustomItemRepository {
                     ))
                     .from(item)
                     .leftJoin(item.reviews, review)
-                    .where(combinedCondition)
+                    .where(createCondition(condition))
                     .groupBy(item)
-                    .orderBy(orderSpecifiers.toArray(new OrderSpecifier[0]))
+                    .orderBy(sortCondition(condition).toArray(new OrderSpecifier[0]))
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
                     .fetch();
         }
 
-        private BooleanExpression getCombinedCondition(List<ItemSearchCondition> conditions) {
-            BooleanExpression combinedCondition = null;
-
-            for (ItemSearchCondition condition : conditions) {
-                BooleanExpression conditionExpression = createCondition(condition);
-                combinedCondition = combinedCondition == null ? conditionExpression : combinedCondition.or(conditionExpression);
-            }
-            return combinedCondition;
-        }
 
         private BooleanExpression createCondition(ItemSearchCondition condition) {
             Map<String, Supplier<BooleanExpression>> conditionSuppliers = new HashMap<>();
@@ -91,27 +80,36 @@ public interface CustomItemRepository {
         }
 
 
-        private List<OrderSpecifier<?>> sortConditions(List<ItemSearchCondition> searchConditions) {
+        private List<OrderSpecifier<?>> sortCondition(ItemSearchCondition condition) {
             List<OrderSpecifier<?>> orderSpecifiers = new ArrayList<>();
+            Order direction = "desc".equalsIgnoreCase(condition.getOrder()) ? Order.DESC : Order.ASC;
 
-            for (ItemSearchCondition search : searchConditions) {
-                Order direction = search.getOrder() != null && search.getOrder().equalsIgnoreCase("desc") ? Order.DESC : Order.ASC;
-
-                if (search.getSort() != null) {
-                    switch (search.getSort()){
-                        case "name": orderSpecifiers.add(new OrderSpecifier<>(direction,item.name)); break;
-                        case "price":  orderSpecifiers.add(new OrderSpecifier<>(direction,item.price)); break;
-                        case "review":orderSpecifiers.add(new OrderSpecifier<>(direction, item.reviews.size())); break;
-                        case "score":orderSpecifiers.add(new OrderSpecifier<>(direction, review.score.avg())); break;
-                    }
-                } else {
-                    orderSpecifiers.add(new OrderSpecifier<>(direction, item.itemId));
+            if (condition.getSort() != null) {
+                switch (condition.getSort()) {
+                    case "name": orderSpecifiers.add(new OrderSpecifier<>(direction, item.name));
+                        break;
+                    case "price":orderSpecifiers.add(new OrderSpecifier<>(direction, item.price));
+                        break;
+                    case "reviewCount":
+                        orderSpecifiers.add(new OrderSpecifier<>(direction,
+                                JPAExpressions.select(review.count().intValue())
+                                        .from(review)
+                                        .where(review.item.eq(item))));
+                        break;
+                    case "score":
+                        orderSpecifiers.add(new OrderSpecifier<>(direction,
+                                JPAExpressions.select(review.score.avg())
+                                        .from(review)
+                                        .where(review.item.eq(item))));
+                        break;
+                    default:
+                        orderSpecifiers.add(new OrderSpecifier<>(direction, item.itemId));
                 }
+            } else {
+                orderSpecifiers.add(new OrderSpecifier<>(direction, item.itemId));
             }
-
             return orderSpecifiers;
         }
-
         private void putStrategy(ItemSearchCondition condition, Map<String, Supplier<BooleanExpression>> conditionSuppliers) {
             conditionSuppliers.put("category", () -> equalsCategory(condition.getCategory()));
             conditionSuppliers.put("brand", () -> equalsBrand(condition.getBrand()));
