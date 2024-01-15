@@ -43,8 +43,7 @@ public class UserVoteService {
     @Transactional
     public void cleanupExpiredData() {
         try {
-            LocalDateTime expirationDateTime = LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT); // 자정 시간 지정
-            repository.deleteExpiredData(expirationDateTime);
+            repository.deleteExpiredData(LocalDate.now());
         } catch (Exception e) {
         log.error("스케줄러 실행 에러 발생", e);
         }

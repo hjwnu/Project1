@@ -25,10 +25,10 @@ public interface ItemMapper
                     .price( item.getPrice() )
                     .detail( item.getDetail() )
                     .color( item.getColor() )
-                    .score(  isList ? item.getScore() : item.getCustomScore() )
                     .brand( item.getBrand() )
                     .stocks( checkStock(item) )
                     .category( item.getCategory() )
+                    .score(  isList ? item.getScore() : item.getCustomScore() )
                     .reviewCount( isList ? item.getReviewCount() : item.getCustomReviewCount() )
                     .imageURLs( getImageResponseDto(item) )
                     .build();
@@ -40,16 +40,16 @@ public interface ItemMapper
     }
 
     default List<ItemImageDto> getImageResponseDto(Item item) {
-        List<ItemImageDto> itemImageDtos = new ArrayList<>();
+        List<ItemImageDto> itemImageDtoList = new ArrayList<>();
         List<ItemImage> imageList = item.getImages();
 
         if (imageList != null) {
             for (ItemImage image : imageList) {
                 ItemImageDto itemImageDto = imageToResponse(image);
-                itemImageDtos.add(itemImageDto);
+                itemImageDtoList.add(itemImageDto);
             }
         }
-        return itemImageDtos;
+        return itemImageDtoList;
     }
 
     default ItemImageDto imageToResponse(ItemImage image) {
