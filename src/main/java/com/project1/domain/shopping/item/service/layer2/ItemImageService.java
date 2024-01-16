@@ -17,7 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -38,6 +37,11 @@ public class ItemImageService extends GenericImageService.GenericImageServiceImp
     }
 
     @Override
+    protected ItemImageDto imageToResponse(ItemImage itemImage) {
+        return mapper.imageToResponse(itemImage);
+    }
+
+    @Override
     protected List<ItemImage> getImages(Item item) {
         return item.getImages();
     }
@@ -47,18 +51,6 @@ public class ItemImageService extends GenericImageService.GenericImageServiceImp
         entity.setImages(images);
     }
 
-
-    @Override
-    public Map<Long, List<ItemImageDto>> fetchImages(List<Long> ids) {
-        Map<Long, List<ItemImage>> imageMap = fetch(ids);
-        return imageMap.entrySet().stream()
-                .collect(Collectors.toMap(
-                        Map.Entry<Long,List<ItemImage>>::getKey,
-                        entry -> entry.getValue().stream()
-                                .map(mapper::imageToResponse)
-                                .collect(Collectors.toList())
-                ));
-    }
     @Override
     protected ItemImage imageBuild(Item item, MultipartFile file, String name) {
         return ItemImage.builder().item(item)
@@ -70,14 +62,12 @@ public class ItemImageService extends GenericImageService.GenericImageServiceImp
 
     @Override
     protected @NotNull String generateFileName(MultipartFile file, Item item) {
-        return new StringBuilder()
-                .append(PATH)
-                .append(item.getCategory().toUpperCase())
-                .append("_")
-                .append(UUID.randomUUID().toString(), 0, 10)
-                .append("_")
-                .append(file.getOriginalFilename())
-                .toString();
+        return PATH +
+                item.getCategory().toUpperCase() +
+                "_" +
+                UUID.randomUUID().toString().substring(0, 10) +
+                "_" +
+                file.getOriginalFilename();
     }
     @Override
     protected Map<Long, List<ItemImage>> fetch(List<Long> ids) {

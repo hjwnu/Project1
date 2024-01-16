@@ -1,8 +1,6 @@
 package com.project1.global.generic;
 
-import com.project1.domain.shopping.item.entity.Item;
 import com.project1.global.utils.S3;
-import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,30 +11,38 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-public interface GenericImageService<E, R> {
+public interface GenericImageService<E, T extends GenericImage, R> {
     @Transactional
-    void updateImages(List<MultipartFile> imgFileList, Item findItem, Item updatedItem) throws IOException;
-    List<E> saveImage(E e, List<MultipartFile> imgFileList) throws IOException;
-    Map<Long, List<R>> fetchItemImages(List<Long> idList);
-    void deleteImage(E e);
-
-    @Slf4j
+    void update(List<MultipartFile> imgFileList, E findEntity, E updatedEntity) throws IOException;
+    List<T> saveAll(List<MultipartFile> imgFileList, E entity) throws IOException ;
+    void delete(E e);
+    Map<Long, List<R>> fetchImages(List<Long> ids);
     @Transactional
-    abstract class GenericImageServiceImpl<E, T extends GenericImage, R> {
+    abstract class GenericImageServiceImpl<E, T extends GenericImage, R> implements GenericImageService<E,T,R>{
         protected final S3 s3;
-
         public GenericImageServiceImpl(S3 s3) {
             this.s3 = s3;
         }
         protected abstract JpaRepository<T, Long> getRepository();
-        protected abstract Map<Long, List<R>> fetchImages(List<Long> ids);
+        protected abstract R imageToResponse(T t);
         protected abstract List<T> getImages(E e);
         protected abstract void setImages(E entity, List<T> images);
         protected abstract T imageBuild(E e, MultipartFile file, String name);
         @NotNull
         protected abstract String generateFileName(MultipartFile file, E e);
         protected abstract Map<Long, List<T>> fetch(List<Long> ids);
+        public Map<Long, List<R>> fetchImages(List<Long> ids) {
+            Map<Long, List<T>> imageMap = fetch(ids);
+            return imageMap.entrySet().stream()
+                    .collect(Collectors.toMap(
+                            Map.Entry<Long,List<T>>::getKey,
+                            entry -> entry.getValue().stream()
+                                    .map(this::imageToResponse)
+                                    .collect(Collectors.toList())
+                    ));
+        }
         public void update(List<MultipartFile> imgFileList, E findEntity, E updatedEntity) throws IOException {
             List<T> imageList = getImages(findEntity)==null? new ArrayList<>():getImages(findEntity);
             if (imgFileList != null) {

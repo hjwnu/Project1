@@ -31,7 +31,7 @@ public class ItemService {
          this.crudService = crudService;
      }
 
-     /*  일반 유저 - 상품 조회 */
+     /*  유저 권한 메서드 - 상품 조회 */
     @Transactional
     public ItemDto.ResponseWithReview findItem(long itemId) {
         Item item = crudService.findEntity(itemId);
@@ -45,7 +45,7 @@ public class ItemService {
         return new PageImpl<>(result, pageRequest, result.size());
     }
 
-    /* 관리자 - 상품 등록 및 수정, 삭제 */
+    /* 관리자 권한 메서드 - 상품 등록 및 수정, 삭제 */
     @Transactional
     public ItemDto.ResponseWithReview createItem(ItemDto.Post requestBody, List<MultipartFile> itemImgFileList) throws IOException {
         verifySameItemNameExist(requestBody.getName());

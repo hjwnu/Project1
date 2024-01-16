@@ -16,7 +16,6 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 @Service @Transactional
 public class ReviewImageService
         extends GenericImageService.GenericImageServiceImpl<Review, ReviewImage, ReviewImageResponseDto>{
@@ -29,34 +28,31 @@ public class ReviewImageService
         this.repository = repository;
         this.mapper = mapper;
     }
-
+    @Override
+    protected @NotNull String generateFileName(MultipartFile file, Review review) {
+        return PATH +
+                review.getItem().getName() +
+                "_" +
+                UUID.randomUUID().toString().substring(0, 10) +
+                "_" +
+                file.getOriginalFilename();
+    }
     @Override
     protected JpaRepository<ReviewImage, Long> getRepository() {
         return repository;
     }
-
     @Override
-    protected Map<Long, List<ReviewImageResponseDto>> fetchImages(List<Long> ids) {
-        Map<Long, List<ReviewImage>> imageMap = fetch(ids);
-        return imageMap.entrySet().stream()
-                .collect(Collectors.toMap(
-                        Map.Entry<Long,List<ReviewImage>>::getKey,
-                        entry -> entry.getValue().stream()
-                                .map(mapper::imageToResponse)
-                                .collect(Collectors.toList())
-                ));
+    protected ReviewImageResponseDto imageToResponse(ReviewImage reviewImage) {
+        return mapper.imageToResponse(reviewImage);
     }
-
     @Override
     protected List<ReviewImage> getImages(Review review) {
         return review.getImages();
     }
-
     @Override
     protected void setImages(Review entity, List<ReviewImage> images) {
         entity.setImages(images);
     }
-
     @Override
     protected ReviewImage imageBuild(Review review, MultipartFile file, String name) {
         return ReviewImage.builder().review((review))
@@ -65,19 +61,6 @@ public class ReviewImageService
                 .path(PATH)
                 .build();
     }
-
-    @Override
-    protected @NotNull String generateFileName(MultipartFile file, Review review) {
-        return new StringBuilder()
-                .append(PATH)
-                .append(review.getItem().getName().toUpperCase())
-                .append("_")
-                .append(UUID.randomUUID().toString(), 0, 10)
-                .append("_")
-                .append(file.getOriginalFilename())
-                .toString();
-    }
-
     @Override
     protected Map<Long, List<ReviewImage>> fetch(List<Long> ids) {
         return repository.fetchReviewImages(ids);

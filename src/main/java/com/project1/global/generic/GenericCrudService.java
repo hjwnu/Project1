@@ -4,14 +4,9 @@ package com.project1.global.generic;
 import com.project1.global.exception.BusinessLogicException;
 import com.project1.global.exception.ExceptionCode;
 import com.project1.global.utils.CustomBeanUtils;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,14 +18,12 @@ public interface GenericCrudService<E, P, R, U, ID> {
     E update(ID id, U patchDto);
     R getResponse(ID id);
     void delete(ID id);
-    Page<R> findByName(String str, int page, int size);
 
     @Transactional
     abstract class GenericCrud<E, P, R, U, ID> implements GenericCrudService<E, P, R, U, ID> {
         protected abstract JpaRepository<E, ID> getRepository();
         protected abstract void setId(E newEntity, ID id);
-        protected abstract GenericMapper<E, P, R, U, ID> getMapper();
-        protected abstract List<E> findByName(String str);
+        protected abstract GenericMapper<E, P, R, U> getMapper();
         @Override
         public E create(P postDto) {
             E entity = getMapper().postDtoToEntity(postDto);
@@ -64,7 +57,7 @@ public interface GenericCrudService<E, P, R, U, ID> {
             E originEntity = verifyExist(id);
             E newEntity = getMapper().patchDtoToEntity(patchDto);
             setId(newEntity, id);
-            CustomBeanUtils<E> customBeanUtils = new CustomBeanUtils<E>();
+            CustomBeanUtils<E> customBeanUtils = new CustomBeanUtils<>();
             customBeanUtils.copyNonNullProperties(newEntity, originEntity);
             return getRepository().save(originEntity);
         }
@@ -73,14 +66,6 @@ public interface GenericCrudService<E, P, R, U, ID> {
             E e = verifyExist(id);
             getRepository().delete(e);
         }
-        @Override
-        public Page<R> findByName(String str, int page, int size) {
-            PageRequest pageRequest = PageRequest.of(page - 1, size);
-            List<E> myContents = findByName(str);
-            List<R> myContentsDto = getResponseList(myContents);
-            return new PageImpl<>(myContentsDto, pageRequest, myContentsDto.size());
-        }
-
 
 
         private E verifyExist(ID id) {
@@ -88,19 +73,7 @@ public interface GenericCrudService<E, P, R, U, ID> {
                     = getRepository().findById(id);
             return optional.orElseThrow(() -> new BusinessLogicException(ExceptionCode.NOT_FOUND));
         }
-        @NotNull
-        private List<R> getResponseList(List<E> findAll) {
-            List<R> findAllDto = new ArrayList<>();
-            for (E e : findAll) {
-                findAllDto.add(getMapper().entityToResponseDto(e));
-            }
-            return findAllDto;
-        }
-        private void VerifiedNoEntity(Page<R> findAll){
-            if(findAll.getTotalElements()==0){
-                throw new BusinessLogicException(ExceptionCode.NOT_FOUND);
-            }
-        }private void VerifiedNoEntity(List<E> findAll){
+        private void VerifiedNoEntity(List<E> findAll){
             if(findAll.size()==0){
                 throw new BusinessLogicException(ExceptionCode.NOT_FOUND);
             }
