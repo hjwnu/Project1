@@ -65,17 +65,18 @@ public class OrderService{
             This method must be sepreated. And consider optimizing query and using batch.
          */
 
-        checkStock(order);
+        checkStock(order); // When out of stock,  throw an exception.
 
-              /*
-            PayInfo payInfo = orderPostDto.getPayInfo();
+          /*
+          It'll be implemented.
+          PayInfo payInfo = orderPostDto.getPayInfo();
          */
 
         deleteItemInCart(order,cart);
         return crudService.entityToResponse(order);
 
     }
-    public OrderDto.ResponseDto updateStatus(long orderNumber, Order.Status status) {
+    private OrderDto.ResponseDto updateStatus(long orderNumber, Order.Status status) {
         Order order = crudService.find(orderNumber);
         order.setStatus(status);
 
