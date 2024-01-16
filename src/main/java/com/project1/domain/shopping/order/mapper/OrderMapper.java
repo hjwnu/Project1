@@ -12,7 +12,7 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface OrderMapper
-    extends GenericMapper<Order, OrderDto.PostDto, OrderDto.ResponseDto, OrderDto.PatchDto, Long> {
+    extends GenericMapper<Order, OrderDto.PostDto, OrderDto.ResponseDto, OrderDto.PatchDto> {
 
     default OrderDto.ResponseDto entityToResponseDto(Order order) {
         return OrderDto.ResponseDto.builder()

@@ -55,13 +55,8 @@ public class OrderCrudService
     }
 
     @Override
-    protected GenericMapper<Order, OrderDto.PostDto, OrderDto.ResponseDto, OrderDto.PatchDto, Long> getMapper() {
+    protected GenericMapper<Order, OrderDto.PostDto, OrderDto.ResponseDto, OrderDto.PatchDto> getMapper() {
         return mapper;
-    }
-
-    @Override
-    protected List<Order> findByName(String str) {
-        return repository.findOrderByMember_Name(str);
     }
 
     public Page<OrderDto.ResponseDto> findByName(Member member, int page, int size) {

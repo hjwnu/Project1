@@ -12,7 +12,7 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface BoardMapper
-    extends GenericMapper<Board, BoardDto.PostDto, BoardDto.ResponseDto, BoardDto.PatchDto, Long> {
+    extends GenericMapper<Board, BoardDto.PostDto, BoardDto.ResponseDto, BoardDto.PatchDto> {
 
     default BoardDto.PageDto entityToPageDto(Board board) {
         if (board == null) {

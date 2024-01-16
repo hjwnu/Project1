@@ -10,7 +10,6 @@ import com.project1.domain.shopping.cart.mapper.CartMapper;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 @Service
 public class CartCrudService
     extends GenericCrudService.GenericCrud<Cart, CartDto.Post, CartDto.Response, CartDto.Patch, Long> {
@@ -33,17 +32,12 @@ public class CartCrudService
     }
 
     @Override
-    protected GenericMapper<Cart, CartDto.Post, CartDto.Response, CartDto.Patch, Long> getMapper() {
+    protected GenericMapper<Cart, CartDto.Post, CartDto.Response, CartDto.Patch> getMapper() {
         return mapper;
     }
     public Cart findCartByMember(Member member) {
         Cart cart = new Cart();
         cart.setMember(member);
         return repository.findCartByMember(member).orElseGet(() ->save(cart));
-    }
-
-    @Override // 미사용
-    protected List<Cart> findByName(String str) {
-        return null;
     }
 }

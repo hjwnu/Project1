@@ -12,16 +12,16 @@ spring:
     properties:
       hibernate:
         highlight_sql: true
-        format_sql: true
+        format_sql: false # SQL pretty print
         show_sql: true
       dialect: org.hibernate.dialect.MySQL5InnoDBDialect
 
   datasource:
     hikari:
       maximum-pool-size: 30
-    url: ${mysql_url}
-    username: ${mysql_master}
-    password: ${mysql_password}
+    url: ${MYSQL_URL}
+    username: ${MYSQL_MASTER}
+    password: ${MYSQL_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
 logging:

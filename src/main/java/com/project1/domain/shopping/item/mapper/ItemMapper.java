@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 @Mapper(componentModel =  "spring")
 public interface ItemMapper
-        extends GenericMapper<Item, ItemDto.Post, ItemDto.ResponseWithReview, ItemDto.Patch, Long> {
+        extends GenericMapper<Item, ItemDto.Post, ItemDto.ResponseWithReview, ItemDto.Patch> {
     default ItemDto.ResponseDtoWithoutReview itemToItemResponseDto(Item item, boolean isList) {
         if ( item == null ) {
             return null;

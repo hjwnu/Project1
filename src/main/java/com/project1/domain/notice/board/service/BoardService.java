@@ -81,8 +81,4 @@ public class BoardService
         return mapper;
     }
 
-    @Override
-    protected List<Board> findByName(String str) {
-        return boardRepository.findAll();
-    }
 }

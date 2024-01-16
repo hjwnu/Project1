@@ -11,7 +11,7 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface ComplainMapper
-        extends GenericMapper<Complain, ComplainDto.ComplainPostDto, ComplainDto.ComplainResponseDto, ComplainDto.ComplainPatchDto, Long> {
+        extends GenericMapper<Complain, ComplainDto.ComplainPostDto, ComplainDto.ComplainResponseDto, ComplainDto.ComplainPatchDto> {
     //ComplainPostDto 객체를 Complain 엔티티로 변환
     @Mapping(source = "itemId", target = "item.itemId") //itemId 필드 값을 가져와서, Complain 객체의 item 필드의 itemId로 매핑
     Complain complainPostDtoToComplain(ComplainDto.ComplainPostDto complainPostDto);

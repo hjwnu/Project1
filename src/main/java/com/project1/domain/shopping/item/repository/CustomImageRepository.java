@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.project1.domain.shopping.item.entity.QItemImage.itemImage;
+
 @Repository
 public interface CustomImageRepository {
     Map<Long, List<ItemImage>> fetchItemImages(List<Long> itemIds);

@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 @Mapper(componentModel = "spring")
 public interface CartMapper
-    extends GenericMapper<Cart, CartDto.Post, CartDto.Response, CartDto.Patch, Long> {
+    extends GenericMapper<Cart, CartDto.Post, CartDto.Response, CartDto.Patch> {
 
 
     default CartDto.Response cartToCartResponseDto(Cart cart) {

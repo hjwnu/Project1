@@ -12,7 +12,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 
 @Service
 @Transactional
@@ -45,13 +44,8 @@ public class ReviewCrudService
     }
 
     @Override
-    protected GenericMapper<Review, ReviewDto.ReviewPostDto, ReviewDto.ReviewResponseDto, ReviewDto.ReviewPatchDto, Long> getMapper() {
+    protected GenericMapper<Review, ReviewDto.ReviewPostDto, ReviewDto.ReviewResponseDto, ReviewDto.ReviewPatchDto> getMapper() {
         return mapper;
-    }
-
-    @Override
-    protected List<Review> findByName(String str) {
-        return reviewRepository.findAllByMember_Name(str);
     }
 
 

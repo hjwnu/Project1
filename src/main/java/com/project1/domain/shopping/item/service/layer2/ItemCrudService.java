@@ -43,14 +43,10 @@ public class ItemCrudService
     }
 
     @Override
-    protected GenericMapper<Item, ItemDto.Post, ItemDto.ResponseWithReview, ItemDto.Patch, Long> getMapper() {
+    protected GenericMapper<Item, ItemDto.Post, ItemDto.ResponseWithReview, ItemDto.Patch> getMapper() {
         return mapper;
     }
 
-    @Override
-    protected List<Item> findByName(String str) {
-        return null;
-    }
 
     public Item verifyExistItemName(String name) {
         return repository.findItemByName(name);

@@ -1,8 +1,9 @@
 package com.project1.domain.shopping.item.mapper;
 
-import com.project1.domain.shopping.item.dto.ItemDto;
 import com.project1.domain.shopping.item.dto.ItemDto.Patch;
 import com.project1.domain.shopping.item.dto.ItemDto.Post;
+import com.project1.domain.shopping.item.dto.ItemDto.ResponseDtoWithoutReview;
+import com.project1.domain.shopping.item.dto.ItemDto.ResponseWithReview;
 import com.project1.domain.shopping.item.entity.Item;
 import com.project1.domain.shopping.item.entity.Item.ItemBuilder;
 import com.project1.domain.shopping.review.dto.ReviewDto.ReviewResponseDto;
@@ -15,7 +16,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-01-09T09:50:34+0900",
+    date = "2024-01-16T11:27:00+0900",
     comments = "version: 1.4.2.Final, compiler: IncrementalProcessingEnvironment from gradle-language-java-8.2.1.jar, environment: Java 17.0.9 (Amazon.com Inc.)"
 )
 @Component
@@ -62,7 +63,7 @@ public class ItemMapperImpl implements ItemMapper {
     }
 
     @Override
-    public ItemDto.ResponseWithReview entityToResponseDto(Item entity) {
+    public ResponseWithReview entityToResponseDto(Item entity) {
         if ( entity == null ) {
             return null;
         }
@@ -71,9 +72,9 @@ public class ItemMapperImpl implements ItemMapper {
 
         reviews = reviewListToReviewResponseDtoList( entity.getReviews() );
 
-        ItemDto.ResponseDtoWithoutReview item = null;
+        ResponseDtoWithoutReview item = null;
 
-        ItemDto.ResponseWithReview responseWithReview = new ItemDto.ResponseWithReview( item, reviews );
+        ResponseWithReview responseWithReview = new ResponseWithReview( item, reviews );
 
         return responseWithReview;
     }

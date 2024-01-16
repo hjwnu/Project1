@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 
 
 @Service
@@ -44,12 +43,7 @@ public class CartItemService
     }
 
     @Override
-    protected GenericMapper<CartItem, CartItemDto, CartItemDto, CartItemResponseDto, Long> getMapper() {
-        return null;
-    }
-
-    @Override
-    protected List<CartItem> findByName(String str) {
+    protected GenericMapper<CartItem, CartItemDto, CartItemDto, CartItemResponseDto> getMapper() {
         return null;
     }
 }

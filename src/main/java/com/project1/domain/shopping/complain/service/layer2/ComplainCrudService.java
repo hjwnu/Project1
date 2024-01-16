@@ -36,14 +36,9 @@ public class ComplainCrudService
         newEntity.setComplainId(aLong);
     }
     @Override
-    protected GenericMapper<Complain, ComplainDto.ComplainPostDto, ComplainDto.ComplainResponseDto, ComplainDto.ComplainPatchDto, Long> getMapper() {
+    protected GenericMapper<Complain, ComplainDto.ComplainPostDto, ComplainDto.ComplainResponseDto, ComplainDto.ComplainPatchDto> getMapper() {
         return mapper;
     }
-    @Override
-    protected List<Complain> findByName(String str) {
-        return complainRepository.findAllByMember_Name(str);
-    }
-
     public Page<ComplainDto.ComplainResponsesDto> findAll(int page, int size) {
         List<ComplainDto.ComplainResponsesDto> list = mapper.complainsToComplainResponsesDto(findList(page, size));
 

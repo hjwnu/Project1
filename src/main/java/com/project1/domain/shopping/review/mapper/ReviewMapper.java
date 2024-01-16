@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Mapper(componentModel = "spring")
-public interface ReviewMapper  extends GenericMapper<Review, ReviewDto.ReviewPostDto, ReviewDto.ReviewResponseDto, ReviewDto.ReviewPatchDto, Long> {
+public interface ReviewMapper  extends GenericMapper<Review, ReviewDto.ReviewPostDto, ReviewDto.ReviewResponseDto, ReviewDto.ReviewPatchDto> {
     default ReviewDto.ReviewResponseDto entityToResponseDto(Review entity) {
         if ( entity == null ) {
             return null;
