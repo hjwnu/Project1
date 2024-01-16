@@ -29,7 +29,7 @@ public class ItemController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping( "s")
+    @PostMapping( "/all")
     public ResponseEntity<MultiResponseDto<ItemDto.ResponseDtoWithoutReview>> getItems(
             @RequestParam(defaultValue = "1") int page,
             @RequestBody @Valid ItemSearchCondition itemSearchCondition){
