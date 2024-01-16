@@ -39,7 +39,7 @@ public interface MemberService {
             verificationService.verifyExistsEmail(memberPostDto.getEmail());
 
             Member created = profileService.createRole(memberPostDto);
-            enDecodeService.encodePrivate(created);
+            enDecodeService.encodePrivacy(created);
             return enDecodeService.memberToMemberResponse(created);
         }
 
@@ -78,14 +78,17 @@ public interface MemberService {
             
             if(verificationService.isAdmin()
                 || verificationService.findTokenMember().getName().equals(name)) return responseDto;
-            
+
+            maskingPrivacy(responseDto);
+            return responseDto;
+        }
+
+        private void maskingPrivacy(MemberResponseDto responseDto) {
             responseDto.setName(responseDto.getName().charAt(0) + "**");
             responseDto.setEmail(maskingEmail(responseDto.getEmail()));
             responseDto.setAddress("*".repeat(10));
             responseDto.setPhone("010-****-****");
-            return responseDto;
         }
-
         private String maskingEmail(String email) {
             int atMarkIndex = email.indexOf('@');
             int maskingNumber = email.substring(0, atMarkIndex).length();

@@ -19,7 +19,6 @@ public class MemberEnDecodeService {
         this.passwordEncoder = passwordEncoder;
     }
     public MemberResponseDto memberToMemberResponse(Member member){
-
         return  new MemberResponseDto(
                 member.getEmail(),
                 member.getName(),
@@ -28,7 +27,7 @@ public class MemberEnDecodeService {
         );
     }
 
-    public void encodePrivate(Member member) {
+    public void encodePrivacy(Member member) {
         String encryptedPassword = passwordEncoder.encode(member.getPassword());
         String encryptedPhone = jwtTokenizer.dataEnDecrypt(member.getPhone(),1);
         String encryptedAddress = jwtTokenizer.dataEnDecrypt(member.getAddress(),1);
