@@ -24,7 +24,7 @@ public class AdminController {
     public AdminController(AdminService adminService) {
         this.adminService = adminService;
     }
-    @PostMapping(value = "/item/register"
+    @PostMapping(value = "/item"
             , consumes = {MediaType.APPLICATION_JSON_VALUE,MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<SingleResponseDto<ItemDto.ResponseWithReview>> createItem(@Valid @RequestPart ItemDto.Post requestBody
             , @Nullable @RequestPart(name = "images") List<MultipartFile> itemImgFileList) throws IOException {
@@ -38,7 +38,7 @@ public class AdminController {
         return new ResponseEntity<>(response, created);
     }
 
-    @PatchMapping(value = "/item/update/{item-id}", consumes = {MediaType.APPLICATION_JSON_VALUE,MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PatchMapping(value = "/item/{item-id}", consumes = {MediaType.APPLICATION_JSON_VALUE,MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<SingleResponseDto<ItemDto.ResponseWithReview>> updateItem(@PathVariable("item-id") @Positive long itemId,
                                                                                     @Valid @RequestPart ItemDto.Patch requestBody, @Nullable @RequestPart(name = "images") List<MultipartFile> itemImgFileList)
             throws IOException {
@@ -50,7 +50,7 @@ public class AdminController {
         return new ResponseEntity<>(response,ok);
     }
 
-    @DeleteMapping("/item/delete/{item-id}")
+    @DeleteMapping("/item/{item-id}")
     public ResponseEntity<HttpStatus> deleteItem(@PathVariable("item-id") @Positive long itemId){
 
         adminService.deleteItem(itemId);

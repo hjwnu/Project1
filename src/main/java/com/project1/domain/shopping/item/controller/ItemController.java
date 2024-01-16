@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
-import java.util.List;
 
 @RestController
 @RequestMapping("/item")
@@ -30,7 +29,7 @@ public class ItemController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping( "/search")
+    @PostMapping( "s")
     public ResponseEntity<MultiResponseDto<ItemDto.ResponseDtoWithoutReview>> getItems(
             @RequestParam(defaultValue = "1") int page,
             @RequestBody @Valid ItemSearchCondition itemSearchCondition){
