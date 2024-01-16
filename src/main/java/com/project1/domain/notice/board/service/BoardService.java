@@ -77,7 +77,7 @@ public class BoardService
     }
 
     @Override
-    protected GenericMapper<Board, BoardDto.PostDto, BoardDto.ResponseDto, BoardDto.PatchDto, Long> getMapper() {
+    protected GenericMapper<Board, BoardDto.PostDto, BoardDto.ResponseDto, BoardDto.PatchDto> getMapper() {
         return mapper;
     }
 
