@@ -74,4 +74,8 @@ public class Item extends Auditable {
         if (this.reviews == null) return 0;
         return this.reviews.size();
     }
+
+    public void removeStocks(long count) {
+        this.stock = this.stock-count;
+    }
 }

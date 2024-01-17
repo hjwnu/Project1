@@ -15,8 +15,12 @@ import com.project1.domain.shopping.order.entity.OrderItem;
 import com.project1.domain.shopping.order.service.layer2.DeliveryInfoService;
 import com.project1.domain.shopping.order.service.layer2.OrderCrudService;
 import com.project1.domain.shopping.order.service.layer2.OrderItemService;
+import com.project1.domain.shopping.payment.dto.KakaoPayDto;
+import com.project1.domain.shopping.payment.service.layer2.KakaoPayService;
 import com.project1.global.exception.BusinessLogicException;
 import com.project1.global.exception.ExceptionCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -27,7 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Service
+@Service @Transactional
 public class OrderService{
     private final OrderCrudService crudService;
     private final OrderItemService orderItemService;
@@ -36,64 +40,48 @@ public class OrderService{
     private final ItemCrudService itemCrudService;
     private final DeliveryInfoService deliveryInfoService;
 
-    public OrderService(OrderCrudService crudService, OrderItemService orderItemService, MemberVerificationService memberVerificationService, CartCrudService cartCrudService, ItemCrudService itemCrudService, DeliveryInfoService deliveryInfoService) {
+    private final KakaoPayService kakaoPayService;
+
+    public OrderService(OrderCrudService crudService, OrderItemService orderItemService, MemberVerificationService memberVerificationService, CartCrudService cartCrudService, ItemCrudService itemCrudService, DeliveryInfoService deliveryInfoService, KakaoPayService kakaoPayService) {
         this.crudService = crudService;
         this.orderItemService = orderItemService;
         this.memberVerificationService = memberVerificationService;
         this.cartCrudService = cartCrudService;
         this.itemCrudService = itemCrudService;
         this.deliveryInfoService = deliveryInfoService;
+        this.kakaoPayService = kakaoPayService;
     }
     @Transactional
     public OrderDto.ResponseDto createOrder(OrderDto.PostDto postDto)   {
-        Member member = memberVerificationService.findTokenMember();
-        Cart cart = verifyMemberAndCart(member);
-        DeliveryInfo info = deliveryInfoService.create(postDto,member);
+        MyCart myCart = getMyCart();
+        DeliveryInfo deliveryInfo = deliveryInfoService.create(postDto, myCart.getMember());
         List<Item> itemList = getItemList(postDto);
 
         List<OrderItem> list = orderItemService.orderItemDtoToEntityList(postDto, itemList);
-        Order order = crudService.create(cart,member, info,list);
+        Order order = crudService.create(myCart.getCart(), myCart.getMember(), deliveryInfo,list);
         orderItemService.saveAll(order);
-        /*
-        fixme:
-            1. The entire ordering process works in this method. This makes it difficult to change the appropriate order status.
-            Also, If an exception occurs in the middle stage, it is difficult to catch.
-            For various reasons, including the SRP, this method must be separated.
-            ex: order_placed, payment_wait, payment_complete,  delivery_preparing ...
-            2. There are too much queries.
-            Maybe It is related reason  as above case.
-            This method must be sepreated. And consider optimizing query and using batch.
-         */
-
-        checkStock(order); // When out of stock,  throw an exception.
-
-          /*
-          It'll be implemented.
-          PayInfo payInfo = orderPostDto.getPayInfo();
-         */
-
-        deleteItemInCart(order,cart);
-        return crudService.entityToResponse(order);
-
-    }
-    private OrderDto.ResponseDto updateStatus(long orderNumber, Order.Status status) {
-        Order order = crudService.find(orderNumber);
-        order.setStatus(status);
-
+        checkStocks(order); // When out of stock,  throw an exception.
         return crudService.entityToResponse(order);
     }
+
+    public OrderDto.ResponseDto afterApprove(KakaoPayDto.ApproveResponse approve) {
+        Order order = crudService.find(Long.parseLong(approve.getPartner_order_id()));
+        order.setStatus(Order.Status.PAYMENT_WAIT);
+        removeStocks(order);
+        deleteItemInCart(order, getMyCart().getCart());
+        order.setStatus(Order.Status.PAYMENT_COMPLETED);
+        return crudService.entityToResponse(order);
+    }
+
     public OrderDto.ResponseDto updateDeliveryInfo(long orderNumber, OrderDto.PatchDto patchDto) {
         Order order = crudService.update(orderNumber, patchDto);
         return crudService.entityToResponse(order);
     }
-    public OrderDto.ResponseDto cancelOrder(long orderNumber)  {
+    public OrderDto.ResponseDto cancelOrder(KakaoPayDto.CancelResponse cancelResponse)  {
+        long orderNumber = Long.parseLong(cancelResponse.getPartner_order_id());
         Order order = crudService.find(orderNumber);
-        order.setStatus(Order.Status.ORDER_CANCELED);
-        /* TODO : This must be seperated too. Or delayed.
-            Stage : DELIVERY_CANCELED -> (RETURN_PRODUCT) -> REFUND_PROGRESS
-         */
         recoveryStocks(order);
-
+        order.setStatus(Order.Status.ORDER_CANCELED);
         return crudService.entityToResponse(order);
     }
     public Page<OrderDto.ResponseDto> findMyOrders(int page, int size) {
@@ -105,10 +93,16 @@ public class OrderService{
     }
 
     /* private */
-    private void checkStock(Order order) {
+    private void checkStocks(Order order) {
             for(OrderItem orderItem :order.getOrderItemList()){
-                itemCrudService.removeStocks(orderItem.getItem(), orderItem.getCount()); // When out of stock,  throw an exception.
+                itemCrudService.checkStocks(orderItem.getItem(), orderItem.getCount()); // When out of stock,  throw an exception.
             }
+    }
+
+    private void removeStocks(Order order) {
+        for(OrderItem orderItem :order.getOrderItemList()){
+            orderItem.getItem().removeStocks(orderItem.getCount());
+        }
     }
     private void deleteItemInCart(Order order, Cart cart) {
         List<CartItem> cartItems = cart.getCartItems();
@@ -154,5 +148,23 @@ public class OrderService{
             itemList.add(itemCrudService.findEntity(item.getItemId()));
         }
         return itemList;
+    }
+
+    @NotNull
+    private OrderService.MyCart getMyCart() {
+        Member member = memberVerificationService.findTokenMember();
+        Cart cart = verifyMemberAndCart(member);
+        MyCart memberAndCart = new MyCart(member, cart);
+        return memberAndCart;
+    }
+    @Getter @Setter
+    private static class MyCart {
+        private final Member member;
+        private final Cart cart;
+
+        public MyCart(Member member, Cart cart) {
+            this.member = member;
+            this.cart = cart;
+        }
     }
 }

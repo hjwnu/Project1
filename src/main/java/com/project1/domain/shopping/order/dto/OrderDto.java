@@ -1,7 +1,6 @@
 package com.project1.domain.shopping.order.dto;
 
 import com.project1.domain.shopping.order.entity.Order;
-import com.project1.domain.shopping.order.entity.OrderItem;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

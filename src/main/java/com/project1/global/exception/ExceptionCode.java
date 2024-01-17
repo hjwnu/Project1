@@ -32,8 +32,9 @@ public enum ExceptionCode {
     VERIFY_FAILURE(401,"ID 혹은 PW가 일치하지 않습니다."),
     USER_EXIST(409,"존재하는 사용자 입니다." ),
     DO_NOT_MATCH_PASSWORD(403, "입력한 비밀번호가 일치하지 않습니다."),
-    LOW_STOCK(1, "재고 부족");
-
+    LOW_STOCK(1, "재고 부족"),
+    PAY_CANCEL(400, "결제 취소"),
+    PAY_FAILED(400, "결제 실패");
     @Getter
     private final int status;
 

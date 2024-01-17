@@ -64,10 +64,9 @@ public class ItemCrudService
         List<ReviewDto.ReviewResponseDto> reviewResponseList = getReviewsResponseDto(entity);
         return new ItemDto.ResponseWithReview(onlyitemResponseDtoWithoutReview, reviewResponseList);
     }
-    public void removeStocks(Item item,Long count) {
+    public void checkStocks(Item item, Long count) {
         long stock = item.getStock() - count;
         if(stock< 0) throw new BusinessLogicException(ExceptionCode.LOW_STOCK);
-        else item.setStock(stock);
     }
 
     private List<ReviewDto.ReviewResponseDto> getReviewsResponseDto(Item item) {

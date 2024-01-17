@@ -39,7 +39,7 @@ public class CartController {
     @PostMapping("/reduce")
     public ResponseEntity<SingleResponseDto<CartDto.Response>> reduceCart(@RequestBody @Valid CartItemDto cartItemDto){
 // 전달받은 인증된 회원의 인증 토큰만 담기면,  생성된 Cart 객체에 Id와  담긴 회원 정보의 memberId만 추가해 넘겨주면 된다.
-        cartItemDto.setCount(cartItemDto.getCount()*-1);
+
         CartDto.Response cart = cartService.addCart(cartItemDto);
 
         SingleResponseDto<CartDto.Response> response = new SingleResponseDto<>(cart,ok);
@@ -53,7 +53,7 @@ public class CartController {
     }
 
 
-    @DeleteMapping("/delete/{itemId}")
+    @DeleteMapping("/{itemId}")
     public ResponseEntity<HttpStatus> deleteCartItem(@PathVariable("itemId") long itemId) {
         cartService.removeItem(itemId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

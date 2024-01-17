@@ -1,8 +1,8 @@
 package com.project1.domain.shopping.order.controller;
 
 import com.project1.domain.shopping.order.dto.OrderDto;
-import com.project1.domain.shopping.order.entity.Order;
 import com.project1.domain.shopping.order.service.layer1.OrderService;
+import com.project1.domain.shopping.payment.dto.KakaoPayDto;
 import com.project1.global.response.SingleResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +13,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Positive;
 
 @RestController
 @Validated
@@ -23,10 +22,9 @@ import javax.validation.constraints.Positive;
 public class OrderController {
     private final OrderService orderService;
     private  final HttpStatus ok = HttpStatus.OK;
-
-
-    @PostMapping("/newOrder")
-    public ResponseEntity<SingleResponseDto<OrderDto.ResponseDto>> postOrder(@Valid @RequestBody OrderDto.PostDto postDto) {
+    //fixme: If multiple payment functions are needed, planned to be implemented as a strategy pattern.
+    @PostMapping("/new-order")
+    public ResponseEntity<SingleResponseDto<OrderDto.ResponseDto>> createOrder(@Valid @RequestBody OrderDto.PostDto postDto) {
         SingleResponseDto<OrderDto.ResponseDto> response =  new SingleResponseDto<>(orderService.createOrder(postDto),ok);
         return new ResponseEntity<>(response, ok);
     }
@@ -41,21 +39,20 @@ public class OrderController {
         return new ResponseEntity<>(response, ok);
     }
     @GetMapping("/checkout")
-    public ResponseEntity<SingleResponseDto<OrderDto.ResponseDto>> getOrderToPay(@Positive long orderNumber) { // 결제 창
-        SingleResponseDto<OrderDto.ResponseDto> response =  new SingleResponseDto<>(orderService.findOrderDetails(orderNumber),ok);
+    public ResponseEntity<SingleResponseDto<OrderDto.ResponseDto>> processApprovePayment(KakaoPayDto.ApproveResponse approve) {
+        SingleResponseDto<OrderDto.ResponseDto> response = new SingleResponseDto<>(orderService.afterApprove(approve), ok);
         return new ResponseEntity<>(response, ok);
     }
 
     @GetMapping()
-    public ResponseEntity<SingleResponseDto<Page<OrderDto.ResponseDto>>> getOrderMember(int page, int size) {
-
+    public ResponseEntity<SingleResponseDto<Page<OrderDto.ResponseDto>>> getOrderByMember(int page, int size) {
         SingleResponseDto<Page<OrderDto.ResponseDto>> response =  new SingleResponseDto<>(orderService.findMyOrders(page,size),ok);
         return new ResponseEntity<>(response, ok);
     }
 
-    @PostMapping("/{order-id}")
-    public ResponseEntity<SingleResponseDto<OrderDto.ResponseDto>> deleteOrder(@PathVariable("order-id") long orderId) {
-        SingleResponseDto<OrderDto.ResponseDto> response = new SingleResponseDto<>(orderService.cancelOrder(orderId),ok);
+    @PostMapping("/refund")
+    public ResponseEntity<SingleResponseDto<OrderDto.ResponseDto>> refundOrder(KakaoPayDto.CancelResponse cancel) {
+        SingleResponseDto<OrderDto.ResponseDto> response = new SingleResponseDto<>(orderService.cancelOrder(cancel),ok);
         return new ResponseEntity<>(response,ok);
     }
 

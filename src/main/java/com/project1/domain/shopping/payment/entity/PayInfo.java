@@ -1,21 +1,15 @@
 package com.project1.domain.shopping.payment.entity;
 
 import com.project1.domain.shopping.order.entity.Order;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
-@Entity
-@Getter
-@Setter
+@Entity@Getter@Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class PayInfo {
-
-    public PayInfo(String impUid) {
-        this.impUid = impUid;
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,12 +19,6 @@ public class PayInfo {
     @JoinColumn(name = "order_id")
     private Order order;
 
-    private String impUid;
+    private String tid; // 결제 고유번호
 
-    public void addOrder(Order order) {
-        this.order = order;
-//        if(order.getPayInfo() != this) {
-//            order.addPayInfo(this);
-//        }
-    }
 }
