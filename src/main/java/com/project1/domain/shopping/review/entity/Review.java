@@ -44,10 +44,18 @@ public class Review extends Auditable {
     private List<ReviewImage> Images;
 
     public void addLike(UserVote.VoteType voteType) {
-        if(voteType.equals(UserVote.VoteType.LIKE)) {
-            this.likeCount = this.likeCount == null? 1 : ++this.likeCount;
+        long startCount = 1;
+        switch (voteType) {
+            // If given type count is null, init the value 1.
+            // Otherwise, return the count by adding 1 to it.
+            case LIKE:
+                this.likeCount=this.likeCount==null? startCount:++this.likeCount;
+                break;
+            case UNLIKE:
+                this.unlikeCount=this.unlikeCount==null?  startCount:++this.unlikeCount;
+                break;
+            default: throw  new IllegalArgumentException("wrong vote type");
         }
-        else this.unlikeCount = this.unlikeCount == null? 1 : ++this.unlikeCount;
     }
     public void removeLike(UserVote.VoteType voteType) {
         if(voteType.equals(UserVote.VoteType.LIKE)) --this.likeCount;
