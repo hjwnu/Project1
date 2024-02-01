@@ -38,6 +38,7 @@ public class OrderController {
 
         return new ResponseEntity<>(response, ok);
     }
+
     @GetMapping("/checkout")
     public ResponseEntity<SingleResponseDto<OrderDto.ResponseDto>> processApprovePayment(KakaoPayDto.ApproveResponse approve) {
         SingleResponseDto<OrderDto.ResponseDto> response = new SingleResponseDto<>(orderService.afterApprove(approve), ok);
@@ -55,7 +56,5 @@ public class OrderController {
         SingleResponseDto<OrderDto.ResponseDto> response = new SingleResponseDto<>(orderService.cancelOrder(cancel),ok);
         return new ResponseEntity<>(response,ok);
     }
-
-
 }
 

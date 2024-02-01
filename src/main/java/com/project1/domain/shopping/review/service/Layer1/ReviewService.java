@@ -36,14 +36,13 @@ public class ReviewService {
     }
 
     public ReviewDto.ReviewResponseDto createReview(List<MultipartFile> reviewImgFileList, ReviewDto.ReviewPostDto postDto) throws IOException {
-        if(postDto.getScore() > 5 || postDto.getScore() < 0 ) throw new BusinessLogicException(ExceptionCode.INVALID_SCORE);
-        Item item = itemService.findEntity(postDto.getItemId());
-        Member member = memberVerificationService.findTokenMember();
-        Review review = crudService.create(postDto,item,member);
+        validateScore(postDto);
+        Review review = buildReview(postDto);
+
         if (reviewImgFileList!=null) createReviewImage(reviewImgFileList,review);
+
         return crudService.entityToResponse(crudService.save(review));
     }
-
     public ReviewDto.ReviewResponseDto updateReview(long reviewId, ReviewDto.ReviewPatchDto patchDto, List<MultipartFile> reviewImgList) throws IOException {
         /*fixme:
            feature for deleting only images is needed.
@@ -56,7 +55,6 @@ public class ReviewService {
         imageService.update(reviewImgList, findReview, updatedReview);
         return crudService.entityToResponse(updatedReview);
     }
-
     public void deleteReview(long reviewId) {
         if(isReviewOwner(reviewId)) {
             Review review = crudService.findEntity(reviewId);
@@ -65,7 +63,6 @@ public class ReviewService {
         }
         else throw new BusinessLogicException(ExceptionCode.MEMBER_NOT_AUTHORIZED);
     }
-
     @Transactional
     public Long handleLike(Long reviewId, UserVote.VoteType voteType) {
         Long memberId = memberVerificationService.findTokenMember().getMemberId();
@@ -81,13 +78,19 @@ public class ReviewService {
         review.addLike(voteType);
         voteService.save(memberId, reviewId, voteType);
     }
-
     private void cancelVote(Long reviewId, UserVote.VoteType voteType, Long memberId, Review review) {
         review.removeLike(voteType);
         voteService.delete(memberId, reviewId,voteType);
     }
+    private Review buildReview(ReviewDto.ReviewPostDto postDto) {
+        Item item = itemService.findEntity(postDto.getItemId());
+        Member member = memberVerificationService.findTokenMember();
+        return crudService.create(postDto,item,member);
+    }
 
-
+    private static void validateScore(ReviewDto.ReviewPostDto postDto) {
+        if(postDto.getScore() > 5 || postDto.getScore() < 0 ) throw new BusinessLogicException(ExceptionCode.INVALID_SCORE);
+    }
     private boolean isReviewOwner(long reviewId) {
         Review review = crudService.findEntity(reviewId);
         return review.getMember().equals(memberVerificationService.findTokenMember());

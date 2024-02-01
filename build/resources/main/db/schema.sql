@@ -136,7 +136,7 @@ CREATE TABLE delivery_info (
 
 CREATE TABLE pay_info (
                           payment_Id bigint AUTO_INCREMENT PRIMARY KEY,
-                          imp_Uid varchar(250),
+                         tid varchar(250),
                           order_id BIGINT
 );
 

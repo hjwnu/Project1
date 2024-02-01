@@ -22,11 +22,11 @@ public class QPayInfo extends EntityPathBase<PayInfo> {
 
     public static final QPayInfo payInfo = new QPayInfo("payInfo");
 
-    public final StringPath impUid = createString("impUid");
-
     public final com.project1.domain.shopping.order.entity.QOrder order;
 
     public final NumberPath<Long> paymentId = createNumber("paymentId", Long.class);
+
+    public final StringPath tid = createString("tid");
 
     public QPayInfo(String variable) {
         this(PayInfo.class, forVariable(variable), INITS);

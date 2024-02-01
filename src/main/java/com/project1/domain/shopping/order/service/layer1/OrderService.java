@@ -39,17 +39,13 @@ public class OrderService{
     private final CartCrudService cartCrudService;
     private final ItemCrudService itemCrudService;
     private final DeliveryInfoService deliveryInfoService;
-
-    private final KakaoPayService kakaoPayService;
-
-    public OrderService(OrderCrudService crudService, OrderItemService orderItemService, MemberVerificationService memberVerificationService, CartCrudService cartCrudService, ItemCrudService itemCrudService, DeliveryInfoService deliveryInfoService, KakaoPayService kakaoPayService) {
+    public OrderService(OrderCrudService crudService, OrderItemService orderItemService, MemberVerificationService memberVerificationService, CartCrudService cartCrudService, ItemCrudService itemCrudService, DeliveryInfoService deliveryInfoService) {
         this.crudService = crudService;
         this.orderItemService = orderItemService;
         this.memberVerificationService = memberVerificationService;
         this.cartCrudService = cartCrudService;
         this.itemCrudService = itemCrudService;
         this.deliveryInfoService = deliveryInfoService;
-        this.kakaoPayService = kakaoPayService;
     }
     @Transactional
     public OrderDto.ResponseDto createOrder(OrderDto.PostDto postDto)   {
