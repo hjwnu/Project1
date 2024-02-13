@@ -38,9 +38,7 @@ public class ReviewService {
     public ReviewDto.ReviewResponseDto createReview(List<MultipartFile> reviewImgFileList, ReviewDto.ReviewPostDto postDto) throws IOException {
         validateScore(postDto);
         Review review = buildReview(postDto);
-
         if (reviewImgFileList!=null) createReviewImage(reviewImgFileList,review);
-
         return crudService.entityToResponse(crudService.save(review));
     }
     public ReviewDto.ReviewResponseDto updateReview(long reviewId, ReviewDto.ReviewPatchDto patchDto, List<MultipartFile> reviewImgList) throws IOException {
