@@ -36,7 +36,7 @@ public class OrderCrudService
     }
 
     public Order create( Cart cart, Member member, DeliveryInfo info, List<OrderItem> item) {
-        Order order = postDtoToEntity(cart, member, info, item);
+        Order order = buildEntity(cart, member, info, item);
         return getRepository().save(order);
     }
 
@@ -72,7 +72,7 @@ public class OrderCrudService
         decodePrivacy(responseDto);
         return responseDto;
     }
-    private Order postDtoToEntity(Cart cart, Member member, DeliveryInfo info, List<OrderItem> itemList) {
+    private Order buildEntity (Cart cart, Member member, DeliveryInfo info, List<OrderItem> itemList) {
         return Order.builder()
                 .status(Order.Status.ORDER_PLACED)
                 .orderItemList(itemList)

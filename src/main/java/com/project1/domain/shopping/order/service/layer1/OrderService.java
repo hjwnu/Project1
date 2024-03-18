@@ -16,7 +16,6 @@ import com.project1.domain.shopping.order.service.layer2.DeliveryInfoService;
 import com.project1.domain.shopping.order.service.layer2.OrderCrudService;
 import com.project1.domain.shopping.order.service.layer2.OrderItemService;
 import com.project1.domain.shopping.payment.dto.KakaoPayDto;
-import com.project1.domain.shopping.payment.service.layer2.KakaoPayService;
 import com.project1.global.exception.BusinessLogicException;
 import com.project1.global.exception.ExceptionCode;
 import lombok.Getter;
@@ -29,6 +28,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 @Service @Transactional
@@ -47,26 +49,48 @@ public class OrderService{
         this.itemCrudService = itemCrudService;
         this.deliveryInfoService = deliveryInfoService;
     }
+
+    private final ConcurrentHashMap<Long, ReentrantLock> orderLock = new ConcurrentHashMap<>();
     @Transactional
-    public OrderDto.ResponseDto createOrder(OrderDto.PostDto postDto)   {
+    public OrderDto.ResponseDto createOrder(OrderDto.PostDto postDto) {
         MyCart myCart = getMyCart();
         DeliveryInfo deliveryInfo = deliveryInfoService.create(postDto, myCart.getMember());
         List<Item> itemList = getItemList(postDto);
-
         List<OrderItem> list = orderItemService.orderItemDtoToEntityList(postDto, itemList);
-        Order order = crudService.create(myCart.getCart(), myCart.getMember(), deliveryInfo,list);
-        orderItemService.saveAll(order);
-        checkStocks(order); // When out of stock,  throw an exception.
-        return crudService.entityToResponse(order);
+
+        Order order = crudService.create(myCart.getCart(), myCart.getMember(), deliveryInfo, list);
+        Lock lock = orderLock.computeIfAbsent(order.getOrderId(), k -> new ReentrantLock());
+        if (lock.tryLock()) {
+            try {
+                orderItemService.saveAll(order);
+
+                checkStocks(order); // When out of stock,  throw an exception.
+                order.setStatus(Order.Status.PAYMENT_WAIT);
+                return crudService.entityToResponse(order);
+            } finally {
+                lock.unlock();
+            }
+        } else{
+            throw new IllegalArgumentException("잘못된 접근입니다.");
+        }
     }
 
+    @Transactional
     public OrderDto.ResponseDto afterApprove(KakaoPayDto.ApproveResponse approve) {
-        Order order = crudService.find(Long.parseLong(approve.getPartner_order_id()));
-        order.setStatus(Order.Status.PAYMENT_WAIT);
-        removeStocks(order);
-        deleteItemInCart(order, getMyCart().getCart());
-        order.setStatus(Order.Status.PAYMENT_COMPLETED);
-        return crudService.entityToResponse(order);
+        Lock lock = orderLock.computeIfAbsent(Long.valueOf(approve.getPartner_order_id()), k -> new ReentrantLock());
+        if(lock.tryLock()) {
+            try {
+                Order order = crudService.find(Long.parseLong(approve.getPartner_order_id()));
+                deleteItemInCart(order, getMyCart().getCart());
+                order.setStatus(Order.Status.PAYMENT_COMPLETED);
+                return crudService.entityToResponse(order);
+            }
+            finally {
+                lock.unlock();
+            }
+        } else {
+            throw new IllegalArgumentException("잘못된 접근입니다.");
+        }
     }
 
     public OrderDto.ResponseDto updateDeliveryInfo(long orderNumber, OrderDto.PatchDto patchDto) {

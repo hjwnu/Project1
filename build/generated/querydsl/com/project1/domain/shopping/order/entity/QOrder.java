@@ -44,6 +44,8 @@ public class QOrder extends EntityPathBase<Order> {
 
     public final EnumPath<Order.Status> status = createEnum("status", Order.Status.class);
 
+    public final NumberPath<Integer> version = createNumber("version", Integer.class);
+
     public QOrder(String variable) {
         this(Order.class, forVariable(variable), INITS);
     }

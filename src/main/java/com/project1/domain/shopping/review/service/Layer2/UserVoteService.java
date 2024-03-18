@@ -8,8 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 
 @Service @Slf4j @Transactional
@@ -45,7 +43,7 @@ public class UserVoteService {
         try {
             repository.deleteExpiredData(LocalDate.now());
         } catch (Exception e) {
-        log.error("스케줄러 실행 에러 발생", e);
+            log.error("스케줄러 실행 에러 발생", e);
         }
     }
     private boolean isVoteTypeDuplicated(UserVote.VoteType voteType, UserVote vote) {

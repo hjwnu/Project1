@@ -31,6 +31,9 @@ public class Order extends Auditable {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @Version
+    private int version;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "delivery_id")
     private DeliveryInfo deliveryInfo;

@@ -6,6 +6,7 @@ import com.project1.domain.shopping.order.entity.OrderItem;
 import com.project1.domain.shopping.order.service.layer2.OrderCrudService;
 import com.project1.domain.shopping.payment.dto.KakaoPayDto;
 import com.project1.domain.shopping.payment.service.layer3.PayInfoCrudService;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
@@ -39,24 +40,13 @@ public class KakaoPayService {
         String itemName =  itemList.get(0).getItem().getName();
         partnerOrderId = findOrder.getOrderId().toString();
         partnerUserId = findOrder.getMember().getName();
-        MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
-        parameters.add("cid", CID);
-        parameters.add("partner_order_id", partnerOrderId);
-        parameters.add("partner_user_id", partnerUserId);
-        parameters.add("item_name", itemList.size() == 1? itemName: itemName + " 외 " + (itemList.size()-1) + "개");
-        parameters.add("quantity",  findOrder.getOrderItemList().stream().map(OrderItem::getCount).reduce(0L,Long::sum).toString());
-        parameters.add("total_amount", String.valueOf(findOrder.getTotalPrice()));
-        parameters.add("tax_free_amount", "0");
-        parameters.add("approval_url",URL+"/payment/success");
-        parameters.add("cancel_url", URL +"/payment/cancel");
-        parameters.add("fail_url", URL+"/payment/fail");
+        MultiValueMap<String, String> parameters = setParameters(itemList, itemName, findOrder);
 
 // 파라미터, 헤더
         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(parameters,this.getHeaders());
 
         // 외부에 보낼 url
         RestTemplate restTemplate = new RestTemplate();
-
         ready = restTemplate.postForObject(
                  "https://kapi.kakao.com/v1/payment/ready",
                  requestEntity,
@@ -64,8 +54,9 @@ public class KakaoPayService {
         payInfoCrudService.create(findOrder, ready);
         return ready;
     }
-    public KakaoPayDto.ApproveResponse approveResponse(String pgToken) {
 
+
+    public KakaoPayDto.ApproveResponse approveResponse(String pgToken) {
         // 카카오 요청
         MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
         parameters.add("cid", CID);
@@ -112,5 +103,21 @@ public class KakaoPayService {
         httpHeaders.set("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
         return httpHeaders;
+    }
+
+    @NotNull
+    private MultiValueMap<String, String> setParameters (List<OrderItem> itemList, String itemName, Order order) {
+        MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
+        parameters.add("cid", CID);
+        parameters.add("partner_order_id", partnerOrderId);
+        parameters.add("partner_user_id", partnerUserId);
+        parameters.add("item_name", itemList.size() > 1? itemName + " 외 " + (itemList.size()-1) + "개" : itemName);
+        parameters.add("quantity",  order.getOrderItemList().stream().map(OrderItem::getCount).reduce(0L,Long::sum).toString());
+        parameters.add("total_amount", String.valueOf(order.getTotalPrice()));
+        parameters.add("tax_free_amount", "0");
+        parameters.add("approval_url",URL+"/payment/success");
+        parameters.add("cancel_url", URL +"/payment/cancel");
+        parameters.add("fail_url", URL+"/payment/fail");
+        return parameters;
     }
 }
